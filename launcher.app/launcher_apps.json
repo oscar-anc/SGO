@@ -1,0 +1,21 @@
+{
+  "_comment": "SGO Launcher configuration. Edit this file to add or remove applications.",
+  "system_name": "SGO",
+  "logo_svg": "imgs/logo_white.svg",
+  "window": {
+    "width": 400,
+    "height": 600,
+    "min_height": 300
+  },
+  "accent_color": "#7ed957",
+  "apps": [
+    {
+      "id": "carta_despacho",
+      "name": "Carta de Despacho",
+      "version": "1.0",
+      "icon_svg": "imgs/icon_carta.svg",
+      "exe_path": "cartadedespacho.app/CartaDeDespacho.exe",
+      "enabled": true
+    }
+  ]
+}

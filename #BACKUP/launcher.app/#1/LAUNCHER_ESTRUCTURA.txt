@@ -1,0 +1,192 @@
+============================================================
+SGO LAUNCHER — Estructura y documentacion
+============================================================
+
+DESCRIPCION GENERAL
+-------------------
+El launcher es una aplicacion independiente de PySide6 con
+ventana frameless (sin borde del SO). Lee launcher_apps.json
+para saber que aplicaciones mostrar y permite seleccionar y
+lanzar la app deseada con un clic doble o el boton INICIAR.
+
+Vive en el mismo directorio padre de todas las apps del sistema.
+No depende de theme.py ni de ningun archivo del proyecto
+CartaDeDespacho. Tiene su propia paleta de colores: PAL.
+
+------------------------------------------------------------
+ARCHIVOS
+------------------------------------------------------------
+
+launcher.py
+    Aplicacion completa en un solo archivo.
+    Contiene: PAL, QSS, clases AppCard y LauncherWindow,
+    helpers y el entry point main().
+
+launcher_apps.json
+    Configuracion de las apps que muestra el launcher.
+    Editar este archivo para agregar, quitar o modificar apps.
+    No requiere recompilar el ejecutable.
+
+launcher.spec
+    Spec de PyInstaller para compilar SGO.exe.
+    Genera un onefile executable.
+    Comando: pyinstaller launcher.spec
+    Salida:  dist/SGO.exe
+
+------------------------------------------------------------
+ESTRUCTURA INTERNA DE launcher.py
+------------------------------------------------------------
+
+PAL (dict)
+    Fuente unica de verdad para TODOS los valores visuales
+    del launcher. Equivalente al QSSD de CartaDeDespacho.
+    Grupos:
+      - Window           tamanio y margenes de la ventana
+      - Typography       fuente, tamano, colores de texto
+      - Header/Titlebar  barra de titulo
+      - Separator        linea debajo del header
+      - Logo             tamano del logo
+      - System name      etiqueta con el nombre del sistema
+      - Window controls  botones Minimizar / Cerrar
+      - App card         tarjeta de cada app (bg, border, size)
+      - App name label   texto del nombre dentro de la tarjeta
+      - Version badge    etiqueta de version dentro de la tarjeta
+      - Scroll area      area de scroll de tarjetas
+      - INICIAR button   boton de lanzamiento
+      - Layout margins   margenes de cada contenedor (tuplas)
+      - Layout spacings  espaciados entre elementos
+
+SVG_LOGO / SVG_BTN_MINIMIZE / SVG_BTN_CLOSE (str)
+    Cadenas SVG opcionales. Si se dejan vacias, se usan
+    fallbacks geometricos generados en codigo.
+    Para personalizar: pegar el SVG completo en la variable.
+
+build_launcher_qss(p)
+    Genera el QSS completo a partir de PAL.
+    Misma filosofia que build_qss() de theme.py:
+    ningun valor literal en el template, todo viene de p[].
+
+resource_path(rel)
+    Resuelve rutas relativas tanto en modo desarrollo como
+    cuando corre como ejecutable compilado con PyInstaller.
+
+load_config()
+    Lee launcher_apps.json. Si falla, devuelve config minima
+    para que la ventana siempre abra aunque el JSON falte.
+
+AppCard(QWidget)
+    Tarjeta visual para cada app del JSON.
+    - Muestra: icono, nombre, badge de version.
+    - Estado normal y selected (cambia objectName para QSS).
+    - mousePressEvent     -> selecciona la tarjeta
+    - mouseDoubleClickEvent -> lanza la app directamente
+
+LauncherWindow(FramelessMainWindow)
+    Ventana principal sin borde del SO.
+    - _buildUI()          construye el layout raiz
+    - _buildHeader()      barra de titulo con logo, nombre y botones
+    - _buildCardList()    scroll area con tarjetas de apps
+    - _buildFooter()      boton INICIAR
+    - _selectCard(card)   manejo de seleccion exclusiva
+    - _launch()           lanza el exe de la app seleccionada
+                          via subprocess.Popen; cierra el launcher
+                          despues de 200ms
+
+main()
+    Entry point. Carga fuentes Open Sans si existen en fonts/,
+    crea QApplication con estilo Fusion y lanza la ventana.
+
+------------------------------------------------------------
+ESTRUCTURA DE DIRECTORIOS EN PRODUCCION
+------------------------------------------------------------
+
+SGO/                            <- directorio raiz del sistema
+|
++-- SGO.exe                     <- launcher compilado
++-- launcher_apps.json          <- configuracion de apps
+|
++-- imgs/                       <- assets del launcher
+|   +-- logo_white.svg
+|   +-- icon_carta.svg          <- icono de CartaDeDespacho
+|   +-- app_icon_dark.ico
+|
++-- fonts/                      <- fuentes opcionales
+|   +-- OpenSans-Regular.ttf
+|   +-- OpenSans-Bold.ttf
+|
++-- cartadedespacho.app/        <- carpeta de la app
+|   +-- CartaDeDespacho.exe     <- app compilada
+|   +-- (demas archivos del build)
+|
++-- (otras apps del sistema...)/
+
+------------------------------------------------------------
+CONFIGURACION launcher_apps.json
+------------------------------------------------------------
+
+{
+  "system_name": "SGO",            <- nombre en el header
+  "logo_svg":    "imgs/logo.svg",  <- ruta al logo del header
+  "accent_color": "#7ed957",       <- color de acento global
+                                      sobreescribe card_border_hover,
+                                      card_border_selected,
+                                      card_bg_selected,
+                                      iniciar_bg_pressed en PAL
+  "apps": [
+    {
+      "id":       "carta_despacho",          <- identificador unico
+      "name":     "Carta de Despacho",       <- nombre visible en tarjeta
+      "version":  "1.0",                     <- badge de version
+      "icon_svg": "imgs/icon_carta.svg",     <- icono (relativo al launcher)
+      "exe_path": "cartadedespacho.app/CartaDeDespacho.exe",
+      "enabled":  true                       <- false = ocultar sin eliminar
+    }
+  ]
+}
+
+Para agregar una nueva app: agregar un objeto al array "apps".
+Para desactivar una app temporalmente: "enabled": false.
+
+------------------------------------------------------------
+COMPILACION (PyInstaller)
+------------------------------------------------------------
+
+Requisito: pip install pyinstaller
+Comando:   pyinstaller launcher.spec
+
+Genera: dist/SGO.exe  (ejecutable unico, ~25 MB con PySide6)
+Copiar SGO.exe al directorio SGO/ junto a launcher_apps.json.
+
+NOTA: launcher.spec aun referencia 'qframelesswindow' como
+hidden import. Si el proyecto usa el fork local de
+framelesswindow, actualizar la linea:
+
+  hiddenimports=['qframelesswindow']
+  ->
+  hiddenimports=['framelesswindow', 'framelesswindow.windows', ...]
+
+igual que en CartaDeDespacho.spec.
+
+------------------------------------------------------------
+PERSONALIZACION VISUAL
+------------------------------------------------------------
+
+Todo el diseno se controla desde PAL en launcher.py.
+No hay valores literales en el QSS ni en los layouts.
+
+Flujo de cambio:
+  1. Abrir launcher.py
+  2. Localizar la clave en PAL (estan comentadas)
+  3. Cambiar el valor
+  4. Guardar y ejecutar (o recompilar)
+
+Ejemplo: cambiar el color de acento de verde a azul:
+  PAL['card_bg_selected']   = '#59c2e6'
+  PAL['card_border_hover']  = '2px solid #59c2e6'
+  PAL['card_border_selected'] = '2px solid #59c2e6'
+  PAL['iniciar_bg_pressed'] = '#59c2e6'
+
+O simplemente cambiar accent_color en launcher_apps.json
+si no se quiere recompilar.
+
+============================================================

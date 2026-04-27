@@ -1,0 +1,263 @@
+"""
+svgs.py — SVG icon assets for CartaDeDespacho.
+
+ARCHITECTURE NOTES
+------------------
+SVGs split into two categories:
+
+1. CODE-LOADED (this file) — loaded as QPixmap/QIcon in Python code via
+   QPixmap.loadFromData(). No files needed, no QSS url() involved.
+   Colors use 'currentColor' (inherits from widget color property) or are
+   fixed white (for buttons with colored backgrounds).
+   Includes: action icons (trash, view, edit, excel), toolbar icons.
+
+2. FILE-BASED (imgs/ folder) — referenced by QSS url(imgs/file.svg).
+   Qt QSS url() only accepts file paths, not data URIs or inline strings.
+   Colors are hardcoded in the SVG files.
+   Includes: arrows (combo/date dropdowns), calendar icon, checkboxes.
+   To change their colors, edit the SVG files in imgs/ directly.
+
+FUTURE — if dynamic colors for file-based SVGs are needed without writing
+to disk, investigate QProxyStyle.drawPrimitive() for checkbox/radio, and
+accept that combo/date arrows will need file writes or stay hardcoded.
+"""
+
+# =============================================================================
+# TOOLBAR SVGs — currentColor, loaded as QIcon in toolbar buttons
+# Stroke color controlled by QPalette / widget color property
+# =============================================================================
+
+SVG_TOOLBAR_BOLD = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+    stroke-width="2" d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"/>
+</svg>"""
+
+SVG_TOOLBAR_ITALIC = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+    stroke-width="2" d="M19 4h-9m4 16H5M15 4L9 20"/>
+</svg>"""
+
+SVG_TOOLBAR_UNDERLINE = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+    stroke-width="2" d="M6 4v6a6 6 0 0 0 12 0V4M4 20h16"/>
+</svg>"""
+
+SVG_TOOLBAR_LIST = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+    stroke-width="2" d="M3 5h.01M3 12h.01M3 19h.01M8 5h13M8 12h13M8 19h13"/>
+</svg>"""
+
+SVG_TOOLBAR_CLEAR = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+    stroke-width="2" d="M4 7V4h16v3M5 20h6m2-16L8 20m7-5l5 5m0-5l-5 5"/>
+</svg>"""
+
+
+# =============================================================================
+# ACTION SVGs — fixed white stroke, used on colored button backgrounds
+# =============================================================================
+
+def get_svg_trash(color: str = '#FFFFFF') -> str:
+    """Trash/delete icon. Default white — sits on colored btn_quitar_svg_bg."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        f'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        f'<polyline points="3 6 5 6 21 6"/>'
+        f'<path d="M19 6l-1 14H6L5 6"/>'
+        f'<path d="M10 11v6M14 11v6"/>'
+        f'<path d="M9 6V4h6v2"/>'
+        f'</svg>'
+    )
+
+
+SVG_VIEW = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+  <polyline points="14 2 14 8 20 8"/>
+  <circle cx="10" cy="15" r="3"/>
+  <line x1="13" y1="18" x2="15" y2="20"/>
+</svg>"""
+
+SVG_EDIT = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+</svg>"""
+
+SVG_EXCEL_IMPORT = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <rect x="2" y="2" width="20" height="20" rx="3" fill="#FFFFFF" opacity="0.15"/>
+  <rect x="2" y="2" width="20" height="20" rx="3" fill="none" stroke="#FFFFFF" stroke-width="1.5"/>
+  <text x="5" y="16" font-family="Arial,sans-serif" font-size="13" font-weight="bold" fill="#FFFFFF">X</text>
+  <path d="M14 8h5M14 12h5M14 16h5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+</svg>"""
+
+# Convenience alias
+SVG_TRASH = get_svg_trash('#FFFFFF')
+
+
+def get_svg_gear(color: str = '#9a9a9a') -> str:
+    """Gear/cog icon — Flowbite outline style."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"'        f' d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37'        f' 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066'        f' 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924'        f' 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724'        f' 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0'        f' 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>'        f'<circle cx="12" cy="12" r="3" stroke="{color}" stroke-width="2"/>'        '</svg>'
+    )
+
+def get_svg_col_add(color: str = '#FFFFFF') -> str:
+    """Add column icon — plus sign."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        f'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        f'<line x1="12" y1="5" x2="12" y2="19"/>'
+        f'<line x1="5" y1="12" x2="19" y2="12"/>'
+        f'</svg>'
+    )
+
+
+def get_svg_col_remove(color: str = '#FFFFFF') -> str:
+    """Remove column icon — minus sign."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        f'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        f'<line x1="5" y1="12" x2="19" y2="12"/>'
+        f'</svg>'
+    )
+
+
+def get_svg_col_rename(color: str = '#FFFFFF') -> str:
+    """Rename/update column icon — circular arrow."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        f'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        f'<polyline points="1 4 1 10 7 10"/>'
+        f'<path d="M3.51 15a9 9 0 1 0 .49-4.5"/>'
+        f'</svg>'
+    )
+
+
+def get_svg_chevron_down(color: str = '#FFFFFF') -> str:
+    """Chevron pointing down — for accordion button."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        f'stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
+        f'<polyline points="6 9 12 15 18 9"/>'
+        f'</svg>'
+    )
+
+
+def get_svg_chevron_right(color: str = '#FFFFFF') -> str:
+    """Chevron pointing right — for collapsed accordion button."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        f'stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
+        f'<polyline points="9 18 15 12 9 6"/>'
+        f'</svg>'
+    )
+
+
+# ── Output format icons ───────────────────────────────────────────────────────
+
+def get_svg_word():
+    """Microsoft Word 2025 official SVG icon. viewBox: 0 0 35 36."""
+    return (
+        '<svg id="uuid-70d351c3-9d52-4d9c-bf87-a1f0a8eb5856" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 35 36">'
+        '<defs>'
+        '<radialGradient id="uuid-ed2a8eb8-fce0-4bde-952b-86ec8e241ee9" cx="-619.29" cy="488.84" fx="-619.29" fy="488.84" r="1" gradientTransform="translate(29495.74 9885.89) scale(47.57 -20.15)" gradientUnits="userSpaceOnUse">'
+        '<stop offset=".18" stop-color="#1657f4"/><stop offset=".57" stop-color="#0036c4"/></radialGradient>'
+        '<linearGradient id="uuid-07943580-643e-4611-b102-f1fc868bd013" x1="5" y1="97" x2="27.97" y2="97" gradientTransform="translate(0 116) scale(1 -1)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#66c0ff"/><stop offset=".26" stop-color="#0094f0"/></linearGradient>'
+        '<radialGradient id="uuid-4901e95c-54b1-4d8b-bf14-0e9c7bb90b87" cx="-637.72" cy="517.98" fx="-637.72" fy="517.98" r="1" gradientTransform="translate(-40017.96 -12225.34) rotate(133.55) scale(29.36 -72.32)" gradientUnits="userSpaceOnUse"><stop offset=".14" stop-color="#d471ff"/><stop offset=".83" stop-color="#509df5" stop-opacity="0"/></radialGradient>'
+        '<radialGradient id="uuid-9988b974-07fe-47ee-9919-3660c45bf150" cx="-611.76" cy="514.18" fx="-611.76" fy="514.18" r="1" gradientTransform="translate(-52234.57 11411.47) rotate(90) scale(18.62 -101.65)" gradientUnits="userSpaceOnUse"><stop offset=".28" stop-color="#4f006f" stop-opacity="0"/><stop offset="1" stop-color="#4f006f"/></radialGradient>'
+        '<linearGradient id="uuid-0983714d-6efe-4203-b8da-170f38fe7225" x1="5" y1="107.22" x2="35" y2="106.72" gradientTransform="translate(0 116) scale(1 -1)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#9deaff"/><stop offset=".2" stop-color="#3bd5ff"/></linearGradient>'
+        '<radialGradient id="uuid-ca2eb1c3-4f62-4719-880a-75c33625c87b" cx="-650.27" cy="515.34" fx="-650.27" fy="515.34" r="1" gradientTransform="translate(-26921.47 -31089.42) rotate(166.85) scale(29.49 -70.64)" gradientUnits="userSpaceOnUse"><stop offset=".06" stop-color="#e4a7fe"/><stop offset=".54" stop-color="#e4a7fe" stop-opacity="0"/></radialGradient>'
+        '<radialGradient id="uuid-b0298544-4529-40e9-8c27-57a5501fe390" cx="-600.8" cy="515.58" fx="-600.8" fy="515.58" r="1" gradientTransform="translate(1363.5 17878.99) rotate(45) scale(22.63 -22.63)" gradientUnits="userSpaceOnUse"><stop offset=".08" stop-color="#367af2"/><stop offset=".87" stop-color="#001a8f"/></radialGradient>'
+        '<radialGradient id="uuid-6f25899f-fcb5-4141-ab07-b61a25bf93ff" cx="-598.04" cy="557.24" fx="-598.04" fy="557.24" r="1" gradientTransform="translate(-7105.12 6724.6) rotate(90) scale(11.2 -12.77)" gradientUnits="userSpaceOnUse"><stop offset=".59" stop-color="#2763e5" stop-opacity="0"/><stop offset=".97" stop-color="#58aafe"/></radialGradient>'
+        '</defs>'
+        '<path d="M5,27.09l14-17.09,16,11.11v11.39c0,1.93-1.57,3.5-3.5,3.5H11c-3.31,0-6-2.69-6-6v-2.91Z" style="fill:url(#uuid-ed2a8eb8-fce0-4bde-952b-86ec8e241ee9);"/>'
+        '<path d="M5,15.04c0-2.49,2.01-4.5,4.5-4.5h20.39l5.11-2.54v12.5c0,1.93-1.57,3.5-3.5,3.5H11c-3.31,0-6,2.69-6,6v-14.96Z" style="fill:url(#uuid-07943580-643e-4611-b102-f1fc868bd013);"/>'
+        '<path d="M5,15.04c0-2.49,2.01-4.5,4.5-4.5h20.39l5.11-2.54v12.5c0,1.93-1.57,3.5-3.5,3.5H11c-3.31,0-6,2.69-6,6v-14.96Z" style="fill:url(#uuid-4901e95c-54b1-4d8b-bf14-0e9c7bb90b87); fill-opacity:.6;"/>'
+        '<path d="M5,15.04c0-2.49,2.01-4.5,4.5-4.5h20.39l5.11-2.54v12.5c0,1.93-1.57,3.5-3.5,3.5H11c-3.31,0-6,2.69-6,6v-14.96Z" style="fill:url(#uuid-9988b974-07fe-47ee-9919-3660c45bf150); fill-opacity:.1;"/>'
+        '<path d="M5,6C5,2.69,7.69,0,11,0h20.5c1.93,0,3.5,1.57,3.5,3.5v5c0,1.93-1.57,3.5-3.5,3.5H11c-3.31,0-6,2.69-6,6V6Z" style="fill:url(#uuid-0983714d-6efe-4203-b8da-170f38fe7225);"/>'
+        '<path d="M5,6C5,2.69,7.69,0,11,0h20.5c1.93,0,3.5,1.57,3.5,3.5v5c0,1.93-1.57,3.5-3.5,3.5H11c-3.31,0-6,2.69-6,6V6Z" style="fill:url(#uuid-ca2eb1c3-4f62-4719-880a-75c33625c87b); fill-opacity:.8;"/>'
+        '<rect y="17" width="16" height="16" rx="3.25" ry="3.25" style="fill:url(#uuid-b0298544-4529-40e9-8c27-57a5501fe390);"/>'
+        '<rect y="17" width="16" height="16" rx="3.25" ry="3.25" style="fill:url(#uuid-6f25899f-fcb5-4141-ab07-b61a25bf93ff); fill-opacity:.65;"/>'
+        '<path d="M13.49,20.43l-1.97,9.14h-2.35s-1.16-5.48-1.16-5.48l-1.22,5.49h-2.38l-1.89-9.14h1.94l1.17,6.03,1.16-6.03h2.38l1.21,6.03,1.14-6.03h1.97Z" style="fill:#fff;"/>'
+        '</svg>'
+    )
+
+
+
+def get_svg_pdf():
+    """PDF file icon — clean red rounded square design. viewBox: 0 0 60 58.5."""
+    return (
+        '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" '        'viewBox="0 0 60 58.5" xml:space="preserve">'        '<path d="M10.6 0h38.8C55.2 0 60 4.8 60 10.6v37.2c0 5.9-4.8 10.6-10.6 10.6H10.6C4.8 58.5 0 53.7 0 47.9V10.6C0 4.8 4.8 0 10.6 0z" fill="#b30b00"/>'        '<path d="M48.2 33.9C47 32.6 44.7 32 41.4 32c-1.8 0-3.7.2-5.5.5-1.2-1.1-2.2-2.4-3.2-3.7-.7-1-1.4-2-2-3.1 1-2.8 1.6-5.8 1.8-8.8 0-2.7-1.1-5.6-4.1-5.6-1 0-2 .6-2.5 1.5-1.3 2.2-.8 6.7 1.3 11.4-.7 2.1-1.5 4.2-2.4 6.5-.8 2-1.7 3.9-2.8 5.7-3.1 1.2-9.6 4.2-10.2 7.5-.2 1 .1 2 .9 2.6.7.6 1.7 1 2.7.9 3.9 0 7.8-5.4 10.5-10.1 1.5-.5 3-1 4.6-1.4 1.7-.4 3.3-.8 4.8-1.1 4.2 3.6 7.9 4.2 9.7 4.2 2.5 0 3.5-1.1 3.8-2 .4-1.1.2-2.3-.6-3.1zm-2.7 1.9c-.1.7-.9 1.2-1.9 1.2-.3 0-.6 0-.9-.1-2-.5-3.9-1.5-5.5-2.8 1.3-.2 2.7-.3 4-.3.9 0 1.8.1 2.7.2.9.2 1.9.6 1.6 1.8zM27.6 13.7c.2-.3.5-.5.9-.6 1 0 1.2 1.1 1.2 2.1-.1 2.3-.5 4.5-1.2 6.7-1.7-4.3-1.5-7.2-.9-8.2zm5.6 19.2c-1.1.2-2.2.5-3.3.8-.8.2-1.6.5-2.5.7.4-.9.8-1.8 1.2-2.6.5-1.1.9-2.2 1.3-3.3.4.6.7 1.1 1.1 1.6.7 1 1.5 1.9 2.2 2.8zm-12.1 5.8c-2.5 4-5 6.6-6.4 6.6-.2 0-.5-.1-.6-.2-.3-.2-.4-.6-.3-.9.2-1.5 3.1-3.6 7.3-5.5z" fill="#fff"/>'        '</svg>'
+    )
+
+
+
+
+def get_svg_bold(color: str = '#4f5f6f') -> str:
+    """Bold — Flowbite outline icon."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"'        f' d="M6 12h8a4 4 0 0 0 0-8H6v8Zm0 0h9a4 4 0 0 1 0 8H6v-8Z"/>'        '</svg>'
+    )
+
+
+def get_svg_italic(color: str = '#4f5f6f') -> str:
+    """Italic — Flowbite outline icon."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"'        f' d="M11 5h4M7 19h4m1-14-4 14"/>'        '</svg>'
+    )
+
+
+def get_svg_underline(color: str = '#4f5f6f') -> str:
+    """Underline — Flowbite outline icon."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-width="2"'        f' d="M6 19h12M8 5v8a4 4 0 0 0 8 0V5M6 5h4m4 0h4"/>'        '</svg>'
+    )
+
+
+def get_svg_list_bullet(color: str = '#4f5f6f') -> str:
+    """Bullet list — Flowbite outline icon."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-width="2"'        f' d="M9 6h11M9 12h11M9 18h11M5 6v.01M5 12v.01M5 18v.01"/>'        '</svg>'
+    )
+
+
+def get_svg_clear_format(color: str = '#4f5f6f') -> str:
+    """Clear formatting — Flowbite outline icon."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"'        f' d="M6 5h12M6 9h12m-8 4h8m-6 4h6M3 19l4-4m0 0 4-4m-4 4-4-4m4 4 4 4"/>'        '</svg>'
+    )
+
+
+def get_svg_minimize_btn(color: str = '#ffffff') -> str:
+    """Minimize button — horizontal line, Flowbite-style. viewBox 14x14 square."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">'        f'<line x1="2" y1="7" x2="12" y2="7" stroke="{color}"'        f' stroke-width="1.5" stroke-linecap="round"/>'        '</svg>'
+    )
+
+
+def get_svg_maximize_btn(color: str = '#ffffff') -> str:
+    """Maximize button — open square. viewBox 14x14 square."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">'        f'<rect x="2" y="2" width="10" height="10" rx="1"'        f' stroke="{color}" stroke-width="1.5" fill="none"/>'        '</svg>'
+    )
+
+
+def get_svg_restore_btn(color: str = '#ffffff') -> str:
+    """Restore button — two overlapping squares. viewBox 14x14 square."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">'        f'<rect x="4" y="1" width="9" height="9" rx="1"'        f' stroke="{color}" stroke-width="1.5" fill="none"/>'        f'<rect x="1" y="4" width="9" height="9" rx="1"'        f' stroke="{color}" stroke-width="1.5" fill="{color}" fill-opacity="0.0"/>'        f'<rect x="1" y="4" width="9" height="9" rx="1"'        f' stroke="{color}" stroke-width="1.5" fill="none"/>'        '</svg>'
+    )
+
+
+def get_svg_close_btn(color: str = '#ffffff') -> str:
+    """Close button X — Flowbite outline style. viewBox 14x14 square."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">'        f'<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round"'        f' stroke-width="1.5" d="M1 1 13 13M13 1 1 13"/>'        '</svg>'
+    )
+
+
+def get_svg_plus_separator(color: str = '#888888') -> str:
+    """Plus separator icon for dual format button. viewBox 10x10 square."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">'        f'<line x1="5" y1="1" x2="5" y2="9" stroke="{color}"'        f' stroke-width="1.5" stroke-linecap="round"/>'        f'<line x1="1" y1="5" x2="9" y2="5" stroke="{color}"'        f' stroke-width="1.5" stroke-linecap="round"/>'        '</svg>'
+    )

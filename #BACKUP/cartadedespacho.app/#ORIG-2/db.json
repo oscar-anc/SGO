@@ -1,0 +1,370 @@
+{
+  "Risk": {
+    "Grandes Cuentas": {
+      "lider": "Juan Pérez García",
+      "firma_lider": "imgs/signatures/lider_juan_perez.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Carlos Mendoza": {
+          "nombre": "Carlos Mendoza Silva",
+          "puesto": "Ejecutivo Senior",
+          "correo": "cmendoza@empresa.com",
+          "celular": "999-888-777",
+          "telefono": "01-234-5678",
+          "firma": "imgs/signatures/carlos_mendoza.png"
+        },
+        "Ana Torres": {
+          "nombre": "Ana María Torres López",
+          "puesto": "Ejecutivo",
+          "correo": "atorres@empresa.com",
+          "celular": "999-777-666",
+          "telefono": "01-234-5679",
+          "firma": "imgs/signatures/ana_torres.png"
+        }
+      }
+    },
+    "Multinacional": {
+      "lider": "Roberto Sánchez Vega",
+      "firma_lider": "imgs/signatures/lider_roberto_sanchez.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Luis Ramírez": {
+          "nombre": "Luis Alberto Ramírez Cruz",
+          "puesto": "Ejecutivo Senior",
+          "correo": "lramirez@empresa.com",
+          "celular": "999-666-555",
+          "telefono": "01-234-5680",
+          "firma": "imgs/signatures/luis_ramirez.png"
+        }
+      }
+    },
+    "Minería": {
+      "lider": "Patricia González Ruiz",
+      "firma_lider": "imgs/signatures/lider_patricia_gonzalez.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Miguel Castro": {
+          "nombre": "Miguel Ángel Castro Díaz",
+          "puesto": "Ejecutivo",
+          "correo": "mcastro@empresa.com",
+          "celular": "999-555-444",
+          "telefono": "01-234-5681",
+          "firma": "imgs/signatures/miguel_castro.png"
+        }
+      }
+    },
+    "Energía": {
+      "lider": "Fernando Vargas López",
+      "firma_lider": "imgs/signatures/lider_fernando_vargas.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Elena Morales": {
+          "nombre": "Elena Cristina Morales Paz",
+          "puesto": "Ejecutivo Senior",
+          "correo": "emorales@empresa.com",
+          "celular": "999-444-333",
+          "telefono": "01-234-5682",
+          "firma": "imgs/signatures/elena_morales.png"
+        }
+      }
+    },
+    "Instituciones Financieras": {
+      "lider": "Andrea Rojas Campos",
+      "firma_lider": "imgs/signatures/lider_andrea_rojas.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Jorge Herrera": {
+          "nombre": "Jorge Luis Herrera Soto",
+          "puesto": "Ejecutivo",
+          "correo": "jherrera@empresa.com",
+          "celular": "999-333-222",
+          "telefono": "01-234-5683",
+          "firma": "imgs/signatures/jorge_herrera.png"
+        }
+      }
+    },
+    "Pesca": {
+      "lider": "Raúl Gutiérrez Flores",
+      "firma_lider": "imgs/signatures/lider_raul_gutierrez.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Carmen Silva": {
+          "nombre": "Carmen Rosa Silva Medina",
+          "puesto": "Ejecutivo",
+          "correo": "csilva@empresa.com",
+          "celular": "999-222-111",
+          "telefono": "01-234-5684",
+          "firma": "imgs/signatures/carmen_silva.png"
+        }
+      }
+    },
+    "Construcción": {
+      "lider": "Diego Martínez Reyes",
+      "firma_lider": "imgs/signatures/lider_diego_martinez.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Sofía Paredes": {
+          "nombre": "Sofía Alejandra Paredes Luna",
+          "puesto": "Ejecutivo Senior",
+          "correo": "sparedes@empresa.com",
+          "celular": "999-111-000",
+          "telefono": "01-234-5685",
+          "firma": "imgs/signatures/sofia_paredes.png"
+        }
+      }
+    }
+  },
+  "Corporate": {
+    "Corporate I": {
+      "lider": "Gabriel Romero Paz",
+      "firma_lider": "imgs/signatures/lider_gabriel_romero.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Valentina Ortiz": {
+          "nombre": "Valentina Isabel Ortiz Vega",
+          "puesto": "Ejecutivo Corporate",
+          "correo": "vortiz@empresa.com",
+          "celular": "998-999-888",
+          "telefono": "01-234-5686",
+          "firma": "imgs/signatures/valentina_ortiz.png"
+        }
+      }
+    },
+    "Corporate II": {
+      "lider": "Ricardo Navarro Castro",
+      "firma_lider": "imgs/signatures/lider_ricardo_navarro.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Isabella Cruz": {
+          "nombre": "Isabella María Cruz Fernández",
+          "puesto": "Ejecutivo Corporate",
+          "correo": "icruz@empresa.com",
+          "celular": "998-888-777",
+          "telefono": "01-234-5687",
+          "firma": "imgs/signatures/isabella_cruz.png"
+        }
+      }
+    },
+    "Corporate III": {
+      "lider": "Adriana Fuentes Ríos",
+      "firma_lider": "imgs/signatures/lider_adriana_fuentes.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Sebastián Ramos": {
+          "nombre": "Sebastián Andrés Ramos Pérez",
+          "puesto": "Ejecutivo Corporate",
+          "correo": "sramos@empresa.com",
+          "celular": "998-777-666",
+          "telefono": "01-234-5688",
+          "firma": "imgs/signatures/sebastian_ramos.png"
+        }
+      }
+    },
+    "Corporate IV (Estado)": {
+      "lider": "Mónica Delgado Suárez",
+      "firma_lider": "imgs/signatures/lider_monica_delgado.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Daniel Jiménez": {
+          "nombre": "Daniel Eduardo Jiménez Vargas",
+          "puesto": "Ejecutivo Estado",
+          "correo": "djimenez@empresa.com",
+          "celular": "998-666-555",
+          "telefono": "01-234-5689",
+          "firma": "imgs/signatures/daniel_jimenez.png"
+        }
+      }
+    },
+    "Corporate V": {
+      "lider": "Cristina Salazar Montes",
+      "firma_lider": "imgs/signatures/lider_cristina_salazar.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Mateo Campos": {
+          "nombre": "Mateo José Campos Rojas",
+          "puesto": "Ejecutivo Corporate",
+          "correo": "mcampos@empresa.com",
+          "celular": "998-555-444",
+          "telefono": "01-234-5690",
+          "firma": "imgs/signatures/mateo_campos.png"
+        }
+      }
+    },
+    "Corporate VI": {
+      "lider": "Andrés Pacheco Luna",
+      "firma_lider": "imgs/signatures/lider_andres_pacheco.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Camila Vega": {
+          "nombre": "Camila Sofía Vega Contreras",
+          "puesto": "Ejecutivo Corporate",
+          "correo": "cvega@empresa.com",
+          "celular": "998-444-333",
+          "telefono": "01-234-5691",
+          "firma": "imgs/signatures/camila_vega.png"
+        }
+      }
+    },
+    "Corporate VII": {
+      "lider": "Lorena Quispe Mamani",
+      "firma_lider": "imgs/signatures/lider_lorena_quispe.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Nicolás Huamán": {
+          "nombre": "Nicolás Santiago Huamán Flores",
+          "puesto": "Ejecutivo Corporate",
+          "correo": "nhuaman@empresa.com",
+          "celular": "998-333-222",
+          "telefono": "01-234-5692",
+          "firma": "imgs/signatures/nicolas_huaman.png"
+        }
+      }
+    },
+    "Corporate Norte": {
+      "lider": "Eduardo Chávez Terrones",
+      "firma_lider": "imgs/signatures/lider_eduardo_chavez.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Lucía Castillo": {
+          "nombre": "Lucía Fernanda Castillo Díaz",
+          "puesto": "Ejecutivo Norte",
+          "correo": "lcastillo@empresa.com",
+          "celular": "998-222-111",
+          "telefono": "01-234-5693",
+          "firma": "imgs/signatures/lucia_castillo.png"
+        }
+      }
+    }
+  },
+  "Commercial": {
+    "Commercial I": {
+      "lider": "Pablo Mendoza Salas",
+      "firma_lider": "imgs/signatures/lider_pablo_mendoza.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Fernanda Núñez": {
+          "nombre": "Fernanda Andrea Núñez Ríos",
+          "puesto": "Ejecutivo Commercial",
+          "correo": "fnunez@empresa.com",
+          "celular": "997-999-888",
+          "telefono": "01-234-5694",
+          "firma": "imgs/signatures/fernanda_nunez.png"
+        },
+        "Rodrigo Espinoza": {
+          "nombre": "Rodrigo Javier Espinoza Torres",
+          "puesto": "Ejecutivo Commercial",
+          "correo": "respinoza@empresa.com",
+          "celular": "997-888-777",
+          "telefono": "01-234-5695",
+          "firma": "imgs/signatures/rodrigo_espinoza.png"
+        }
+      }
+    },
+    "Commercial II": {
+      "lider": "Verónica Alvarado Ruiz",
+      "firma_lider": "imgs/signatures/lider_veronica_alvarado.png",
+      "correo_lider": "lider@empresa.com",
+      "celular_lider": "999-000-000",
+      "ejecutivos": {
+        "Martín Guzmán": {
+          "nombre": "Martín Alexis Guzmán Vera",
+          "puesto": "Ejecutivo Commercial",
+          "correo": "mguzman@empresa.com",
+          "celular": "997-777-666",
+          "telefono": "01-234-5696",
+          "firma": "imgs/signatures/martin_guzman.png"
+        }
+      }
+    }
+  },
+  "ramos": [
+    "ACCIDENTES PERSONALES",
+    "DESGRAVAMEN",
+    "DESHONESTIDAD",
+    "EQUIPO ELECTRÓNICO",
+    "IMPORTACIONES",
+    "INCENDIO Y LÍNEAS ALIADAS",
+    "LUCRO CESANTE",
+    "MONTAJE EAR",
+    "RESPONSABILIDAD CIVIL",
+    "ROBO Y/O ASALTO",
+    "ROTURA DE MAQUINARIA",
+    "SCTR",
+    "TODO RIESGO CONSTRUCCIÓN CAR",
+    "TODO RIESGO CONTRATISTA",
+    "TRANSPORTE NACIONAL",
+    "VEHÍCULOS",
+    "VIDA"
+  ],
+  "aseguradoras": [
+    "RIMAC SEGUROS Y REASEGUROS",
+    "PACIFICO SEGUROS",
+    "MAPFRE PERU",
+    "LA POSITIVA SEGUROS",
+    "CHUBB SEGUROS",
+    "LIBERTY SEGUROS",
+    "AVLA PERU COMPAÑIA DE SEGUROS"
+  ],
+  "nomenclatura_comprobantes": {
+    "RIMAC SEGUROS Y REASEGUROS": "LIQUIDACIÓN",
+    "PACIFICO SEGUROS": "AVISO DE COBRANZA",
+    "MAPFRE PERU": "LIQUIDACIÓN",
+    "LA POSITIVA SEGUROS": "PROFORMA",
+    "CHUBB SEGUROS": "LIQUIDACIÓN",
+    "LIBERTY SEGUROS": "LIQUIDACIÓN",
+    "AVLA PERU COMPAÑIA DE SEGUROS": "LIQUIDACIÓN"
+  },
+  "endosatarios": [
+    "BANCO BBVA PERÚ",
+    "BANCO DE CRÉDITO DEL PERÚ",
+    "BANCO INTERBANK",
+    "BANCO SCOTIABANK PERÚ",
+    "BANCO PICHINCHA",
+    "BANCO BANBIF",
+    "BANCO GNB PERÚ",
+    "BANCO RIPLEY",
+    "BANCO FALABELLA PERÚ",
+    "BANCO MIBANCO",
+    "BANCO AZTECA PERÚ",
+    "CMAC AREQUIPA",
+    "CMAC CUSCO",
+    "CMAC PIURA",
+    "CMAC TRUJILLO",
+    "COFIDE",
+    "FINANCIERA OH!",
+    "FINANCIERA COMPARTAMOS",
+    "FINANCIERA CREDINKA"
+  ],
+  "endorsee_tab_names": {
+    "BANCO BBVA PERÚ": "BBVA",
+    "BANCO DE CRÉDITO DEL PERÚ": "BCP",
+    "BANCO INTERBANK": "Interbank",
+    "BANCO SCOTIABANK PERÚ": "Scotiabank",
+    "BANCO CONTINENTAL": "BBVA Continental",
+    "BANCO PICHINCHA": "Pichincha",
+    "BANCO MIBANCO": "MiBanco",
+    "BANCO FINANCIERO": "Financiero",
+    "BANCO FALABELLA": "Falabella",
+    "BANCO RIPLEY": "Ripley",
+    "BANCO GNB PERÚ": "GNB",
+    "BANCO AZTECA PERÚ": "Azteca",
+    "BANCO DE LA NACIÓN": "Nación",
+    "COFIDE": "COFIDE"
+  }
+}

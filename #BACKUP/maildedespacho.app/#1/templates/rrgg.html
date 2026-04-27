@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<!--
+    rrgg.html — Plantilla de correo para línea RRGG (Seguros Generales)
+
+    Variables inyectadas por Python (template_engine.py → render_template()):
+    ─────────────────────────────────────────────────────────────────────────
+    $COLOR_ACENTO          → '#0078d4' (azul RRGG)
+    $COLOR_ACENTO_DARK     → '#005a9e'
+    $EMPRESA_NOMBRE        → 'RRGG Seguros'
+    $TIPO_PLANTILLA        → ej. 'Póliza · Despacho individual'
+    $BADGE_TEXTO           → ej. 'DESPACHO INDIVIDUAL'
+
+    $CONTRATANTE           → nombre del contratante/asegurado
+    $CONTACTO              → nombre de la persona de contacto
+    $CIA                   → nombre de la aseguradora
+    $VIGENCIA              → ej. '2024 – 2025'
+
+    $CUERPO_PRINCIPAL      → párrafo principal del mensaje (varía por L2)
+
+    Bloques condicionales (eliminados por remove_block() si no aplican):
+    ─────────────────────────────────────────────────────────────────────────
+    %%BLOQUE_FILAS_POLIZA_START%%   ... %%BLOQUE_FILAS_POLIZA_END%%
+        → filas de Ramo + Nro. Póliza (siempre 1+, máx 12 para programa)
+        → cada fila adicional usa %%FILA_POLIZA_EXTRA_START%% ... %%END%%
+
+    %%BLOQUE_ENDOSO_START%%         ... %%BLOQUE_ENDOSO_END%%
+        → aparece solo en L1=Endoso
+        → contiene $LABEL_ENDOSO y filas de endoso
+
+    %%BLOQUE_FILAS_ENDOSO_START%%   ... %%BLOQUE_FILAS_ENDOSO_END%%
+        → filas de Ramo + Póliza + Nro.Endoso + Movimiento
+        → para colectivo: múltiples filas
+
+    La lógica de qué bloques incluir/excluir está en template_engine.py.
+    Esta plantilla NO contiene lógica Python — solo HTML + marcadores.
+-->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Despacho RRGG</title>
+    <style>
+        /* CSS inline — clientes de correo no cargan archivos externos */
+        body, table, td, p, a {
+            margin: 0; padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px; line-height: 1.65; color: #333333;
+        }
+        table { border-collapse: collapse; }
+        .email-container { max-width: 620px; margin: 0 auto; background: #ffffff; }
+        .header { background-color: $COLOR_ACENTO; padding: 16px 24px; }
+        .header-empresa { color: #ffffff; font-size: 16px; font-weight: bold; margin: 0; }
+        .header-sub { color: rgba(255,255,255,0.80); font-size: 11px; margin: 3px 0 0 0; }
+        .header-badge {
+            display: inline-block; background: rgba(255,255,255,0.20);
+            color: #fff; font-size: 10px; font-weight: bold;
+            padding: 3px 10px; border-radius: 10px; margin-top: 6px;
+        }
+        .body-pad { padding: 20px 24px 0 24px; }
+        .datos-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+        .datos-table td { padding: 3px 0; font-size: 12px; vertical-align: top; }
+        .lbl { color: #888888; font-size: 11px; width: 110px; padding-right: 8px; white-space: nowrap; }
+        .val { color: #222222; font-weight: bold; }
+        .val-acc { color: $COLOR_ACENTO; font-weight: bold; }
+        .divider { border: none; border-top: 1px solid #eeeeee; margin: 14px 0; }
+        .cuerpo p { margin: 0 0 10px 0; color: #333333; font-size: 13px; line-height: 1.65; }
+        .fila-extra td { border-top: 1px dashed #eeeeee; padding-top: 6px; }
+        .footer { padding: 12px 24px 16px 24px; border-top: 1px solid #eeeeee; }
+        .footer-txt { color: #aaaaaa; font-size: 10px; }
+        .footer-acc { color: $COLOR_ACENTO; font-size: 10px; }
+    </style>
+</head>
+<body>
+<div class="email-container">
+
+    <!-- ── HEADER ───────────────────────────────────────────────────────── -->
+    <div class="header">
+        <p class="header-empresa">$EMPRESA_NOMBRE</p>
+        <p class="header-sub">$TIPO_PLANTILLA</p>
+        <span class="header-badge">$BADGE_TEXTO</span>
+    </div>
+
+    <!-- ── CUERPO ────────────────────────────────────────────────────────── -->
+    <div class="body-pad">
+
+        <!-- TABLA DE DATOS FIJOS (siempre presente) -->
+        <table class="datos-table">
+            <tr>
+                <td class="lbl">Contratante</td>
+                <td class="val">$CONTRATANTE</td>
+                <td class="lbl" style="padding-left:16px">Contacto</td>
+                <td class="val">$CONTACTO</td>
+            </tr>
+            <tr>
+                <td class="lbl">CIA Aseguradora</td>
+                <td class="val" colspan="3">$CIA</td>
+            </tr>
+            <tr>
+                <td class="lbl">Vigencia</td>
+                <td class="val" colspan="3">$VIGENCIA</td>
+            </tr>
+
+            %%BLOQUE_FILAS_POLIZA_START%%
+            <!-- Fila base de Ramo + Póliza (siempre presente en L1=Póliza) -->
+            <tr>
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_0</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_0</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_1_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_1</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_1</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_1_END%%
+            %%FILA_POLIZA_EXTRA_2_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_2</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_2</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_2_END%%
+            %%FILA_POLIZA_EXTRA_3_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_3</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_3</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_3_END%%
+            %%FILA_POLIZA_EXTRA_4_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_4</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_4</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_4_END%%
+            %%FILA_POLIZA_EXTRA_5_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_5</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_5</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_5_END%%
+            %%FILA_POLIZA_EXTRA_6_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_6</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_6</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_6_END%%
+            %%FILA_POLIZA_EXTRA_7_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_7</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_7</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_7_END%%
+            %%FILA_POLIZA_EXTRA_8_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_8</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_8</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_8_END%%
+            %%FILA_POLIZA_EXTRA_9_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_9</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_9</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_9_END%%
+            %%FILA_POLIZA_EXTRA_10_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_10</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_10</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_10_END%%
+            %%FILA_POLIZA_EXTRA_11_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_11</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_11</td>
+            </tr>
+            %%FILA_POLIZA_EXTRA_11_END%%
+            %%BLOQUE_FILAS_POLIZA_END%%
+
+            %%BLOQUE_ENDOSO_START%%
+            <!-- Filas de endoso (solo en L1=Endoso) -->
+            <tr>
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_0</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val-acc">$POLIZA_0</td>
+            </tr>
+            <tr>
+                <td class="lbl">$LABEL_ENDOSO</td>
+                <td class="val-acc">$ENDOSO_0</td>
+                <td class="lbl" style="padding-left:16px">Movimiento</td>
+                <td class="val">$MOVIMIENTO_0</td>
+            </tr>
+            %%FILA_ENDOSO_EXTRA_1_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_E1</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val">$POLIZA_E1</td>
+            </tr>
+            <tr>
+                <td class="lbl">$LABEL_ENDOSO</td>
+                <td class="val-acc">$ENDOSO_1</td>
+                <td class="lbl" style="padding-left:16px">Movimiento</td>
+                <td class="val">$MOVIMIENTO_1</td>
+            </tr>
+            %%FILA_ENDOSO_EXTRA_1_END%%
+            %%FILA_ENDOSO_EXTRA_2_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_E2</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val">$POLIZA_E2</td>
+            </tr>
+            <tr>
+                <td class="lbl">$LABEL_ENDOSO</td>
+                <td class="val-acc">$ENDOSO_2</td>
+                <td class="lbl" style="padding-left:16px">Movimiento</td>
+                <td class="val">$MOVIMIENTO_2</td>
+            </tr>
+            %%FILA_ENDOSO_EXTRA_2_END%%
+            %%FILA_ENDOSO_EXTRA_3_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_E3</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val">$POLIZA_E3</td>
+            </tr>
+            <tr>
+                <td class="lbl">$LABEL_ENDOSO</td>
+                <td class="val-acc">$ENDOSO_3</td>
+                <td class="lbl" style="padding-left:16px">Movimiento</td>
+                <td class="val">$MOVIMIENTO_3</td>
+            </tr>
+            %%FILA_ENDOSO_EXTRA_3_END%%
+            %%FILA_ENDOSO_EXTRA_4_START%%
+            <tr class="fila-extra">
+                <td class="lbl">Ramo</td>
+                <td class="val">$RAMO_E4</td>
+                <td class="lbl" style="padding-left:16px">Nro. Póliza</td>
+                <td class="val">$POLIZA_E4</td>
+            </tr>
+            <tr>
+                <td class="lbl">$LABEL_ENDOSO</td>
+                <td class="val-acc">$ENDOSO_4</td>
+                <td class="lbl" style="padding-left:16px">Movimiento</td>
+                <td class="val">$MOVIMIENTO_4</td>
+            </tr>
+            %%FILA_ENDOSO_EXTRA_4_END%%
+            %%BLOQUE_ENDOSO_END%%
+
+        </table>
+
+        <hr class="divider">
+
+        <!-- CUERPO DEL MENSAJE -->
+        <div class="cuerpo">
+            $CUERPO_PRINCIPAL
+        </div>
+
+    </div><!-- /body-pad -->
+
+    <!-- ── FOOTER ────────────────────────────────────────────────────────── -->
+    <div class="footer">
+        <p class="footer-acc">Generado con sistema de Despacho Digital · RRGG Seguros</p>
+    </div>
+
+</div><!-- /email-container -->
+</body>
+</html>

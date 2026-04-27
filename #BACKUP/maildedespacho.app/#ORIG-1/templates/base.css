@@ -1,0 +1,138 @@
+/* base.css — Estilos compartidos para plantillas de correo de despacho
+   Importado por rrgg.html y transportes.html
+   Variables inyectadas por Python antes de enviar a Outlook:
+     $COLOR_ACENTO     → color principal según empresa (#0078d4 / #107c10)
+     $COLOR_ACENTO_DARK → variante oscura del acento
+   No usar fuentes externas — Outlook no las descarga. Solo stack seguro.
+*/
+
+/* ── Reset mínimo para clientes de correo ── */
+body, table, td, p, a {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    line-height: 1.65;
+    color: #333333;
+}
+table {
+    border-collapse: collapse;
+}
+img {
+    border: 0;
+    display: block;
+}
+
+/* ── Contenedor principal ── */
+.email-wrapper {
+    width: 100%;
+    background-color: #f4f6f8;
+    padding: 0;
+}
+.email-container {
+    max-width: 620px;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+
+/* ── Header de empresa ── */
+.header {
+    background-color: $COLOR_ACENTO;
+    padding: 16px 24px;
+}
+.header-empresa {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    letter-spacing: 0.3px;
+}
+.header-subtitulo {
+    color: rgba(255,255,255,0.80);
+    font-size: 11px;
+    margin: 3px 0 0 0;
+}
+.header-badge {
+    display: inline-block;
+    background-color: rgba(255,255,255,0.20);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 3px 10px;
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+    margin-top: 6px;
+}
+
+/* ── Tabla de datos del despacho ── */
+.datos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+}
+.datos-table td {
+    padding: 4px 0;
+    font-size: 12px;
+    vertical-align: top;
+}
+.datos-label {
+    color: #888888;
+    font-size: 11px;
+    width: 110px;
+    padding-right: 8px;
+}
+.datos-valor {
+    color: #222222;
+    font-weight: bold;
+}
+.datos-valor-accent {
+    color: $COLOR_ACENTO;
+    font-weight: bold;
+}
+
+/* ── Separador horizontal ── */
+.divider {
+    border: none;
+    border-top: 1px solid #eeeeee;
+    margin: 14px 0;
+}
+
+/* ── Cuerpo del mensaje ── */
+.cuerpo {
+    padding: 0 0 16px 0;
+}
+.cuerpo p {
+    margin: 0 0 10px 0;
+    color: #333333;
+    font-size: 13px;
+    line-height: 1.65;
+}
+.cuerpo strong {
+    color: #222222;
+}
+
+/* ── Filas adicionales (programa/colectivo) ── */
+.fila-adicional {
+    border-top: 1px dashed #eeeeee;
+    padding-top: 6px;
+    margin-top: 4px;
+}
+
+/* ── Footer del correo ── */
+.footer {
+    padding: 12px 24px 16px 24px;
+    border-top: 1px solid #eeeeee;
+}
+.footer-texto {
+    color: #aaaaaa;
+    font-size: 10px;
+}
+.footer-acento {
+    color: $COLOR_ACENTO;
+    font-size: 10px;
+}
+
+/* ── Body padding ── */
+.body-pad {
+    padding: 20px 24px 0 24px;
+}

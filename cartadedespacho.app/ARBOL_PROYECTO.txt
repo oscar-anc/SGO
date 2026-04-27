@@ -1,0 +1,91 @@
+CartaDeDespacho/                        ← raíz del proyecto
+│
+├── app.py                              ← ventana principal, navegación, estado global
+├── helpers.py                          ← generación Word/PDF, resource_path()
+├── strings.py                          ← todos los textos de UI (español)
+├── validators.py                       ← validadores de campos
+├── svgs.py                             ← todos los íconos SVG (funciones get_svg_*())
+├── theme.py                            ← QSSD + QSSA + build_qss() + build_palette()
+│                                         • QSSD  → dict con 461 variables: colores,
+│                                                   tipografía, bordes, radius, padding,
+│                                                   margin, sizing, imágenes, constantes CSS,
+│                                                   y valores de layout Python
+│                                         • QSSA  → alias de QSSD (QSSA = QSSD)
+│                                         • build_qss(theme)  → genera QSS completo
+│                                         • build_palette(theme) → genera QPalette
+│
+├── pageConfig.py                       ← Página 1: configuración general
+├── pagePolicies.py                     ← Página 2: asegurados y pólizas
+├── pageUnit.py                         ← Página 3: unidades
+├── pageFinance.py                      ← Página 4: financiamiento
+├── pageAnnex.py                        ← Página 5: anexos, garantías, cesiones
+│
+├── build_template.js                   ← plantilla JS: carta principal (Word)
+├── build_template_cesiones.js          ← plantilla JS: carta de cesiones
+├── build_template_garantias.js         ← plantilla JS: garantías
+├── build_template_siniestros.js        ← plantilla JS: siniestros
+│
+├── db.json                             ← datos de lookup: ramos, aseguradoras,
+│                                         endosatarios, endorsee_tab_names
+│
+├── CartaDeDespacho.spec                ← spec PyInstaller (build distribución)
+│
+├── widgets/                            ← componentes reutilizables
+│   ├── __init__.py                     ← exports públicos del paquete
+│   ├── base.py                         ← widgets base: NoNewlineLineEdit, etc.
+│   ├── cards.py                        ← CardWidget, InsuredGroupCard,
+│   │                                     GuaranteesCard, GuaranteesTableCard
+│   ├── dialog.py                       ← CustomDialog con titlebar propio
+│   ├── endorsement.py                  ← EndorsementTableCard, _GroupEditor,
+│   │                                     _EndorsementEditDialog, _EndorsementViewDialog
+│   ├── messagebox.py                   ← CustomMessageBox (question/info/warning/error)
+│   └── tree.py                         ← AutoTreeWidget
+│
+├── framelesswindow/                    ← fork local de qframelesswindow (PySide6)
+│   ├── __init__.py                     ← exports: FramelessWindow, TitleBar, etc.
+│   ├── _rc/
+│   │   ├── __init__.py
+│   │   └── resource.py                 ← recursos Qt compilados (SVGs originales)
+│   ├── titlebar/
+│   │   ├── __init__.py                 ← TitleBarBase, TitleBar
+│   │   └── title_bar_buttons.py        ← MinimizeButton, MaximizeButton, CloseButton
+│   │                                     (todos usan svgs.py, sin antialiasing)
+│   ├── windows/
+│   │   ├── __init__.py
+│   │   ├── c_structures.py             ← estructuras ctypes para WinAPI
+│   │   └── window_effect.py            ← DWM shadow, mica, acrylic
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── win32_utils.py
+│   │   ├── linux_utils.py
+│   │   └── mac_utils.py
+│   ├── linux/
+│   │   ├── __init__.py
+│   │   └── window_effect.py
+│   ├── mac/
+│   │   ├── __init__.py
+│   │   └── window_effect.py
+│   └── webengine/
+│       └── __init__.py
+│
+└── imgs/                               ← assets gráficos (NO incluidos en outputs)
+    ├── logo_white.svg                  ← logo app (titlebar)
+    ├── app_icon_dark.ico               ← ícono exe (tema claro Windows)
+    ├── app_icon_light.ico              ← ícono exe (tema oscuro Windows)
+    ├── arrow_down.svg                  ← QComboBox dropdown arrow
+    ├── arrow_up.svg                    ← QComboBox open arrow
+    ├── arrow_left.svg                  ← QCalendarWidget prev month
+    ├── arrow_right.svg                 ← QCalendarWidget next month
+    ├── calendar.svg                    ← QDateEdit icon
+    ├── check.svg                       ← QCheckBox checked
+    ├── check_indeterminate.svg         ← QCheckBox indeterminate
+    ├── check_disabled.svg              ← QCheckBox disabled
+    ├── splash_screen.png               ← splash PyInstaller
+    └── signatures/                     ← firmas escaneadas (opcional)
+        └── *.png / *.jpg
+
+NOTAS:
+- customWidgets.py  → DEPRECADO, no usar
+- theme_editor.py   → editor visual de tema (herramienta separada, no en build)
+- QSSA y QSSD son el mismo objeto (QSSA = QSSD), se mantienen ambos nombres
+  por compatibilidad con el código existente
