@@ -615,7 +615,7 @@ QSSD = {
     'btn_endtable_edit_radius':         '4px',
     'btn_endtable_edit_padding':        '2px',
     'btn_endtable_edit_size':           '20',
-    'btn_endtable_edit_bg_hover':     '#242526',
+    'btn_endtable_edit_bg_hover':       '#242526',
 
     # ── EndorsementTableCard header: Import Excel (role="endtable-import") ───
     'btn_endtable_import_bg':               'none',
@@ -626,22 +626,22 @@ QSSD = {
     'btn_endtable_import_radius':           '4px',
     'btn_endtable_import_padding':          '2px',
     'btn_endtable_import_size':             '20',
-    'btn_endtable_import_bg_hover':       '#254A3A',
+    'btn_endtable_import_bg_hover':         '#254A3A',
 
     # ── Accordion toggle (role="accordion") ───────────────────────────────────
-    'btn_accordion_bg':             'transparent',
-    'btn_accordion_border_top':     '1px solid rgba(255,255,255,60)',
-    'btn_accordion_border_right':   '1px solid rgba(255,255,255,60)',
-    'btn_accordion_border_bottom':  '1px solid rgba(255,255,255,60)',
-    'btn_accordion_border_left':    '1px solid rgba(255,255,255,60)',
-    'btn_accordion_radius':         '4px',
-    'btn_accordion_padding':        '0px',
-    'btn_accordion_size':           '26px',
-    'btn_accordion_color':          '#FFFFFF',
-    'btn_accordion_bg_hover':       'rgba(255,255,255,40)',
-    'btn_accordion_border_color_hover': 'rgba(255,255,255,120)',
-    'btn_accordion_bg_checked':     'transparent',
-    'btn_accordion_border_color_checked': 'rgba(255,255,255,60)',
+    'btn_accordion_bg':                     'none',
+    'btn_accordion_border_top':             'none',
+    'btn_accordion_border_right':           'none',
+    'btn_accordion_border_bottom':          'none',
+    'btn_accordion_border_left':            'none',
+    'btn_accordion_radius':                 '4px',
+    'btn_accordion_padding':                '0px',
+    'btn_accordion_size':                   '18px',
+    'btn_accordion_color':                  '#858889',
+    'btn_accordion_bg_hover':               '#242526',
+    'btn_accordion_border_color_hover':     'none',
+    'btn_accordion_bg_checked':             '#242526',
+    'btn_accordion_border_color_checked':   'none',
 
     # ── Format selector (role="format-selector") — pageConfig ─────────────────
     'btn_format_bg':                '#FFFFFF',
@@ -889,10 +889,11 @@ QSSD = {
     'card_toggle_font_size':            '12pt',
     'card_toggle_font_weight':          '700',
     # #CardToggle (chevron label)
-    'card_toggle_color':            '#ededed',
+    'card_toggle_color':            '#858889',
     'card_toggle_bg':               'transparent',
+    'card_toggle_bg_hover':         '#242526',
     # Python-accessed SVG color (cards.py, pageAnnex.py, endorsement.py paint accordion chevrons)
-    'card_header_toggle':           '#ededed',
+    'card_header_toggle':           '#858889',
     # #CardBody
     'card_body_bg':                 '#121314',
     'card_body_padding':            '0px 0px 0px 0px',
@@ -984,41 +985,41 @@ QSSD = {
 
     # #EndorsementCard
     'endcard_bg':                   'transparent',
-    'endcard_border_top':           '1px solid #C8D0D8',
-    'endcard_border_right':         '1px solid #C8D0D8',
-    'endcard_border_bottom':        '1px solid #C8D0D8',
-    'endcard_border_left':          '1px solid #C8D0D8',
+    'endcard_border_top':           'none',
+    'endcard_border_right':         'none',
+    'endcard_border_bottom':        'none',
+    'endcard_border_left':          'none',
     'endcard_radius':               '0px',
-    'endcard_label_color':          '#4f5f6f',
+    'endcard_label_color':          '#bfbfbf',
     # typography
     'endcard_label_font_family':    'Ancizar Sans',
     'endcard_label_font_size':      '10pt',
     'endcard_label_font_weight':    '400',
     'endcard_label_bg':             'transparent',
-    'endcard_checkbox_color':       '#4f5f6f',
+    'endcard_checkbox_color':       '#bfbfbf',
     'endcard_checkbox_bg':          'transparent',
     # #InsuredGroupHeader
-    'insured_hdr_bg':               '#4f5f6f',
-    'insured_hdr_border_top':       '1px solid #4f5f6f',
-    'insured_hdr_border_right':     '1px solid #4f5f6f',
-    'insured_hdr_border_bottom':    '1px solid #4f5f6f',
-    'insured_hdr_border_left':      '1px solid #4f5f6f',
+    'insured_hdr_bg':               'transparent',
+    'insured_hdr_border_top':       '1px solid #2A2B2C',
+    'insured_hdr_border_right':     '1px solid #2A2B2C',
+    'insured_hdr_border_bottom':    '1px solid #2A2B2C',
+    'insured_hdr_border_left':      '1px solid #2A2B2C',
     'insured_hdr_radius':           '0px',
-    'insured_hdr_label_color':      '#FFFFFF',
+    'insured_hdr_label_color':      '#ededed',
     'insured_hdr_label_bg':         'transparent',
     'insured_hdr_label_fw':         'bold',
     # typography
     'insured_hdr_label_font_family':    'Ancizar Sans',
-    'insured_hdr_label_font_size':      '10pt',
+    'insured_hdr_label_font_size':      '11pt',
     'insured_hdr_label_font_weight':    '700',
     'insured_hdr_toggle_color':       '#FFFFFF',
     # #InsuredGroupBody
-    'insured_body_bg':              '#FFFFFF',
+    'insured_body_bg':              'transparent',
     'insured_body_border_top':      'none',
-    'insured_body_border_right':    '1px solid #4f5f6f',
-    'insured_body_border_bottom':   '1px solid #4f5f6f',
-    'insured_body_border_left':     '1px solid #4f5f6f',
-    'insured_body_padding':         '6px',
+    'insured_body_border_right':    '1px solid #2A2B2C',
+    'insured_body_border_bottom':   '1px solid #2A2B2C',
+    'insured_body_border_left':     '1px solid #2A2B2C',
+    'insured_body_padding':         '0px',
     # format-selector (pageConfig output buttons) — see S11
     # #ConfigPanel
     'config_panel_bg':              '#FFFFFF',
@@ -1185,20 +1186,20 @@ QSSD = {
     'msg_body_gap':                 4,
 
     # ── CardWidget base layout ─────────────────────────────────────────────────
-    'card_header_fixed_height':     32,
-    'card_toggle_fixed_size':       (26, 26),
-    'card_body_min_height':         174,
+    'card_header_fixed_height':     25,
+    'card_toggle_fixed_size':       (22, 22),
+    'card_body_min_height':         175,
 
     # ── EndorsementTableCard ──────────────────────────────────────────────────
-    'endtable_header_height':       32,
+    'endtable_header_height':       25,
     # Python-accessed size (cards.py uses this for endtable icon button fixed size)
-    'btn_endtable_size':            22,
+    'btn_endtable_size':            25,
     'endtable_dialog_min_size':     (760, 500),
     'endtable_view_min_size':       (920, 620),
     'endtable_topbar_height':       30,
     'endtable_col_header_width':    28,
-    'margins_endtable_header':      (12, 4, 8, 4),
-    'spacing_endtable_header':      8,
+    'margins_endtable_header':      (8, 4, 6, 4),
+    'spacing_endtable_header':      5,
     'spacing_endtable_groups':      8,
     'spacing_endtable_topbar2':     6,
 
@@ -2381,6 +2382,9 @@ def build_qss(theme):
         font-weight: {c['card_toggle_font_weight']};
         color:            {c['card_toggle_color']};
         background-color: {c['card_toggle_bg']};
+    }}
+    #CardToggle:hover {{
+        background-color: {c['card_toggle_bg_hover']};
     }}
     #CardBody {{
         background-color: {c['card_body_bg']};

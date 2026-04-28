@@ -70,9 +70,8 @@ class CardWidget(QWidget):
             self._toggleBtn.setProperty('role', 'accordion')
             self._toggleBtn.setCheckable(True)
             self._toggleBtn.setChecked(True)  # expanded by default
-            self._toggleBtn.setFlat(True)
             self._toggleBtn.setFixedSize(*QSSA['card_toggle_fixed_size'])
-            color = QSSA.get('card_header_toggle', '#ffffff')
+            color = QSSA.get('card_header_toggle')
             self._toggleBtn.setIcon(self._chevronIcon(expanded=True, color=color))
             self._toggleBtn.toggled.connect(self._onToggle)
             headerLayout.addWidget(self._toggleBtn, 0, Qt.AlignVCenter)
@@ -136,7 +135,7 @@ class CardWidget(QWidget):
         self._collapsed = collapsed
         self._body.setVisible(not collapsed)
         if hasattr(self, '_toggleBtn'):
-            color = QSSA.get('card_header_toggle', '#ffffff')
+            color = QSSA.get('card_header_toggle')
             self._toggleBtn.blockSignals(True)
             self._toggleBtn.setChecked(not collapsed)
             self._toggleBtn.setIcon(self._chevronIcon(expanded=not collapsed, color=color))
@@ -224,13 +223,12 @@ class InsuredGroupCard(QWidget):
         headerLayout.addStretch()
 
         # Accordion toggle button
-        color = QSSA.get('card_header_toggle', '#ffffff')
+        color = QSSA.get('card_header_toggle')
         self._toggleBtn = QPushButton()
         self._toggleBtn.setObjectName("CardToggle")
         self._toggleBtn.setProperty('role', 'accordion')
         self._toggleBtn.setCheckable(True)
         self._toggleBtn.setChecked(False)  # collapsed by default
-        self._toggleBtn.setFlat(True)
         self._toggleBtn.setFixedSize(*QSSA['card_toggle_fixed_size'])
         self._toggleBtn.setIcon(CardWidget._chevronPixmap(expanded=False, color=color))
         self._toggleBtn.toggled.connect(self._onToggle)
@@ -260,7 +258,7 @@ class InsuredGroupCard(QWidget):
     def _onToggle(self, expanded: bool):
         self._collapsed = not expanded
         self._body.setVisible(expanded)
-        color = QSSA.get('card_header_toggle', '#ffffff')
+        color = QSSA.get('card_header_toggle')
         self._toggleBtn.setIcon(
             CardWidget._chevronPixmap(expanded=expanded, color=color)
         )
@@ -328,13 +326,12 @@ class EndorsementPolicyCard(QWidget):
         headerLayout.addWidget(self._countLabel)
 
         # Accordion toggle button
-        color = QSSA.get('card_header_toggle', '#FFFFFF')
+        color = QSSA.get('card_header_toggle')
         self._toggleBtn = QPushButton()
         self._toggleBtn.setObjectName("CardToggle")
         self._toggleBtn.setProperty('role', 'accordion')
         self._toggleBtn.setCheckable(True)
         self._toggleBtn.setChecked(False)  # collapsed by default
-        self._toggleBtn.setFlat(True)
         self._toggleBtn.setFixedSize(*QSSA['card_toggle_fixed_size'])
         self._toggleBtn.setIcon(CardWidget._chevronPixmap(expanded=False, color=color))
         self._toggleBtn.toggled.connect(self._onToggle)
@@ -359,7 +356,7 @@ class EndorsementPolicyCard(QWidget):
         if not checked:
             # Reset collapsed state when unchecking
             self._collapsed = False
-            color = QSSA.get('card_header_toggle', '#FFFFFF')
+            color = QSSA.get('card_header_toggle')
             self._toggleBtn.blockSignals(True)
             self._toggleBtn.setChecked(False)
             self._toggleBtn.setIcon(CardWidget._chevronPixmap(expanded=False, color=color))
@@ -369,7 +366,7 @@ class EndorsementPolicyCard(QWidget):
     def _onToggle(self, expanded: bool):
         self._collapsed = not expanded
         self._body.setVisible(expanded)
-        color = QSSA.get('card_header_toggle', '#FFFFFF')
+        color = QSSA.get('card_header_toggle')
         self._toggleBtn.setIcon(
             CardWidget._chevronPixmap(expanded=expanded, color=color)
         )
@@ -489,7 +486,7 @@ class GuaranteesCard(QWidget):
         self._toggleBtn.setCheckable(True)
         self._toggleBtn.setChecked(False)  # collapsed by default
         self._toggleBtn.setFixedSize(*QSSA['annex_toolbar_btn_size'])
-        color = QSSA.get('card_header_toggle', '#ffffff')
+        color = QSSA.get('card_header_toggle')
         self._toggleBtn.setIcon(CardWidget._chevronPixmap(expanded=False, color=color))
         self._toggleBtn.toggled.connect(self._onToggle)
         headerLayout.addWidget(self._toggleBtn)
@@ -558,7 +555,7 @@ class GuaranteesCard(QWidget):
 
     def _onToggle(self, expanded: bool):
         self._body.setVisible(expanded)
-        color = QSSA.get('card_header_toggle', '#ffffff')
+        color = QSSA.get('card_header_toggle')
         self._toggleBtn.setIcon(CardWidget._chevronPixmap(expanded=expanded, color=color))
 
     # ── Toolbar actions ───────────────────────────────────────────────────────
@@ -693,7 +690,7 @@ class GuaranteesTableCard(QWidget):
         hl.setContentsMargins(*QSSA['margins_endtable_header'])
         hl.setSpacing(QSSA['spacing_endtable_header'])
 
-        btn_sz  = int(QSSA.get('btn_endtable_size', 22))
+        btn_sz  = int(QSSA.get('btn_endtable_size'))
         icon_sz = btn_sz - 6
         from PySide6.QtCore import QByteArray
 
