@@ -254,7 +254,7 @@ QSSD = {
     # drop-down arrow area
     'combobox_arrow_area_width':    '24',
     'combobox_arrow_area_border':   '1px solid #2A2B2C',
-    'combobox_arrow_size':          '14',
+    'combobox_arrow_size':          '13',
     'combobox_arrow_down_img':      'url(imgs/arrow_down.svg)',
     'combobox_arrow_up_img':        'url(imgs/arrow_up.svg)',
     # drop-down arrow area  — hover
@@ -623,9 +623,9 @@ QSSD = {
     'btn_endtable_import_border_right':     'none',
     'btn_endtable_import_border_bottom':    'none',
     'btn_endtable_import_border_left':      'none',
-    'btn_endtable_import_radius':           '4px',
+    'btn_endtable_import_radius':           '2px',
     'btn_endtable_import_padding':          '2px',
-    'btn_endtable_import_size':             '20',
+    'btn_endtable_import_size':             '18',
     'btn_endtable_import_bg_hover':         '#254A3A',
 
     # ── Accordion toggle (role="accordion") ───────────────────────────────────
@@ -635,7 +635,7 @@ QSSD = {
     'btn_accordion_border_bottom':          'none',
     'btn_accordion_border_left':            'none',
     'btn_accordion_radius':                 '4px',
-    'btn_accordion_padding':                '0px',
+    'btn_accordion_padding':                '2px',
     'btn_accordion_size':                   '18px',
     'btn_accordion_color':                  '#858889',
     'btn_accordion_bg_hover':               '#242526',
@@ -707,9 +707,9 @@ QSSD = {
     'btn_manual_fixed_border_bottom':   '1px solid #333536',
     'btn_manual_fixed_border_left':     '1px solid #333536',
     'btn_manual_fixed_radius':          '4px',
-    'btn_manual_fixed_padding':         '0px 6px',
+    'btn_manual_fixed_padding':         '2px 6px',
     'btn_manual_fixed_min_height':      '26',
-    'btn_manual_fixed_text_align':      'left',
+    'btn_manual_fixed_text_align':      'center',
     # typography
     'btn_manual_fixed_font_family':     'Ancizar Sans',
     'btn_manual_fixed_font_size':       '10pt',
@@ -875,7 +875,7 @@ QSSD = {
     'card_header_radius':           '0px',
     'card_header_border_top':       '1px solid #3a94bc',
     'card_header_border_right':     '1px solid #2A2B2C',
-    'card_header_border_bottom':    'none',
+    'card_header_border_bottom':    '1px solid #2A2B2C',
     'card_header_border_left':      '1px solid #2A2B2C',
     # #CardTitle (QLabel in header)
     'card_title_color':             '#ededed',
@@ -898,7 +898,7 @@ QSSD = {
     'card_body_bg':                 '#121314',
     'card_body_padding':            '0px 0px 0px 0px',
     'card_body_radius':             '0px',
-    'card_body_border_top':       '1px solid #2A2B2C',
+    'card_body_border_top':       'none',
     'card_body_border_right':     '1px solid #2A2B2C',
     'card_body_border_bottom':    '1px solid #2A2B2C',
     'card_body_border_left':      '1px solid #2A2B2C',

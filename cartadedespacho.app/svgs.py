@@ -22,41 +22,6 @@ to disk, investigate QProxyStyle.drawPrimitive() for checkbox/radio, and
 accept that combo/date arrows will need file writes or stay hardcoded.
 """
 
-# =============================================================================
-# TOOLBAR SVGs — currentColor, loaded as QIcon in toolbar buttons
-# Stroke color controlled by QPalette / widget color property
-# =============================================================================
-
-SVG_TOOLBAR_BOLD = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-    stroke-width="2" d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"/>
-</svg>"""
-
-SVG_TOOLBAR_ITALIC = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-    stroke-width="2" d="M19 4h-9m4 16H5M15 4L9 20"/>
-</svg>"""
-
-SVG_TOOLBAR_UNDERLINE = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-    stroke-width="2" d="M6 4v6a6 6 0 0 0 12 0V4M4 20h16"/>
-</svg>"""
-
-SVG_TOOLBAR_LIST = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-    stroke-width="2" d="M3 5h.01M3 12h.01M3 19h.01M8 5h13M8 12h13M8 19h13"/>
-</svg>"""
-
-SVG_TOOLBAR_CLEAR = """<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-    stroke-width="2" d="M4 7V4h16v3M5 20h6m2-16L8 20m7-5l5 5m0-5l-5 5"/>
-</svg>"""
-
-
-# =============================================================================
-# ACTION SVGs — fixed white stroke, used on colored button backgrounds
-# =============================================================================
-
 def get_svg_trash(color: str = '#FFFFFF') -> str:
     """Trash/delete icon. Default white — sits on colored btn_quitar_svg_bg."""
     return (
@@ -68,7 +33,6 @@ def get_svg_trash(color: str = '#FFFFFF') -> str:
         f'<path d="M9 6V4h6v2"/>'
         f'</svg>'
     )
-
 
 SVG_VIEW = """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
   <path fill-rule="evenodd" clip-rule="evenodd" d="M10 .5a9.5 9.5 0 1 0 0 19c2.082 0 4.008-.67 5.573-1.806l4.72 4.72a1 1 0 0 0 1.414 0l.707-.707a1 1 0 0 0 0-1.414l-4.72-4.72A9.46 9.46 0 0 0 19.5 10 9.5 9.5 0 0 0 10 .5M3.5 10a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0" fill="#858889"/>
@@ -82,7 +46,6 @@ SVG_EXCEL_IMPORT = """<svg xmlns="http://www.w3.org/2000/svg" height="18" width=
   <path style="fill:#858889" d="M.566.068H.36v.067h.068v.046H.36v.044h.068V.27H.36v.045h.068V.36H.36v.045h.068V.45H.36v.068h.206c.01 0 .019-.009.019-.02V.087Q.584.069.566.067M.54.45H.45V.405h.09zm0-.09H.45V.315h.09zm0-.09H.45V.225h.09zm0-.09H.45V.135h.09zM0 .065V.52l.337.065V0zm.213.342L.174.333.169.318H.168L.163.334.124.408H.063L.136.294.07.18h.062l.033.068.007.019h.001L.18.247.216.179h.057L.205.292l.07.115z"/>
 </svg>"""
 
-# Convenience alias
 SVG_TRASH = get_svg_trash('#FFFFFF')
 
 
@@ -102,7 +65,6 @@ def get_svg_col_add(color: str = '#FFFFFF') -> str:
         f'</svg>'
     )
 
-
 def get_svg_col_remove(color: str = '#FFFFFF') -> str:
     """Remove column icon — minus sign."""
     return (
@@ -111,7 +73,6 @@ def get_svg_col_remove(color: str = '#FFFFFF') -> str:
         f'<line x1="5" y1="12" x2="19" y2="12"/>'
         f'</svg>'
     )
-
 
 def get_svg_col_rename(color: str = '#FFFFFF') -> str:
     """Rename/update column icon — circular arrow."""
@@ -123,28 +84,22 @@ def get_svg_col_rename(color: str = '#FFFFFF') -> str:
         f'</svg>'
     )
 
-
-def get_svg_chevron_down(color: str = '#FFFFFF') -> str:
+def get_svg_chevron_down(color: str = '#858889') -> str:
     """Chevron pointing down — for accordion button."""
     return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
-        f'stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
-        f'<polyline points="6 9 12 15 18 9"/>'
+        f'<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">'
+        f'<g transform="rotate(90 8 8)"><path d="M8.172 8 3.586 3.414 6.414.586 13.828 8l-7.414 7.414-2.828-2.828z" fill="{color}"/>'
+        f'</g>'
         f'</svg>'
     )
 
-
-def get_svg_chevron_right(color: str = '#FFFFFF') -> str:
+def get_svg_chevron_right(color: str = '#858889') -> str:
     """Chevron pointing right — for collapsed accordion button."""
     return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
-        f'stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
-        f'<polyline points="9 18 15 12 9 6"/>'
+        f'<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">'
+        f'<path d="M8.172 8 3.586 3.414 6.414.586 13.828 8l-7.414 7.414-2.828-2.828z" fill="{color}"/>'
         f'</svg>'
     )
-
-
-# ── Output format icons ───────────────────────────────────────────────────────
 
 def get_svg_word():
     """Microsoft Word 2025 official SVG icon. viewBox: 0 0 35 36."""
@@ -173,16 +128,11 @@ def get_svg_word():
         '</svg>'
     )
 
-
-
 def get_svg_pdf():
     """PDF file icon — clean red rounded square design. viewBox: 0 0 60 58.5."""
     return (
         '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" '        'viewBox="0 0 60 58.5" xml:space="preserve">'        '<path d="M10.6 0h38.8C55.2 0 60 4.8 60 10.6v37.2c0 5.9-4.8 10.6-10.6 10.6H10.6C4.8 58.5 0 53.7 0 47.9V10.6C0 4.8 4.8 0 10.6 0z" fill="#b30b00"/>'        '<path d="M48.2 33.9C47 32.6 44.7 32 41.4 32c-1.8 0-3.7.2-5.5.5-1.2-1.1-2.2-2.4-3.2-3.7-.7-1-1.4-2-2-3.1 1-2.8 1.6-5.8 1.8-8.8 0-2.7-1.1-5.6-4.1-5.6-1 0-2 .6-2.5 1.5-1.3 2.2-.8 6.7 1.3 11.4-.7 2.1-1.5 4.2-2.4 6.5-.8 2-1.7 3.9-2.8 5.7-3.1 1.2-9.6 4.2-10.2 7.5-.2 1 .1 2 .9 2.6.7.6 1.7 1 2.7.9 3.9 0 7.8-5.4 10.5-10.1 1.5-.5 3-1 4.6-1.4 1.7-.4 3.3-.8 4.8-1.1 4.2 3.6 7.9 4.2 9.7 4.2 2.5 0 3.5-1.1 3.8-2 .4-1.1.2-2.3-.6-3.1zm-2.7 1.9c-.1.7-.9 1.2-1.9 1.2-.3 0-.6 0-.9-.1-2-.5-3.9-1.5-5.5-2.8 1.3-.2 2.7-.3 4-.3.9 0 1.8.1 2.7.2.9.2 1.9.6 1.6 1.8zM27.6 13.7c.2-.3.5-.5.9-.6 1 0 1.2 1.1 1.2 2.1-.1 2.3-.5 4.5-1.2 6.7-1.7-4.3-1.5-7.2-.9-8.2zm5.6 19.2c-1.1.2-2.2.5-3.3.8-.8.2-1.6.5-2.5.7.4-.9.8-1.8 1.2-2.6.5-1.1.9-2.2 1.3-3.3.4.6.7 1.1 1.1 1.6.7 1 1.5 1.9 2.2 2.8zm-12.1 5.8c-2.5 4-5 6.6-6.4 6.6-.2 0-.5-.1-.6-.2-.3-.2-.4-.6-.3-.9.2-1.5 3.1-3.6 7.3-5.5z" fill="#fff"/>'        '</svg>'
     )
-
-
-
 
 def get_svg_bold(color: str = '#4f5f6f') -> str:
     """Bold — Flowbite outline icon."""
@@ -190,13 +140,11 @@ def get_svg_bold(color: str = '#4f5f6f') -> str:
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"'        f' d="M6 12h8a4 4 0 0 0 0-8H6v8Zm0 0h9a4 4 0 0 1 0 8H6v-8Z"/>'        '</svg>'
     )
 
-
 def get_svg_italic(color: str = '#4f5f6f') -> str:
     """Italic — Flowbite outline icon."""
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"'        f' d="M11 5h4M7 19h4m1-14-4 14"/>'        '</svg>'
     )
-
 
 def get_svg_underline(color: str = '#4f5f6f') -> str:
     """Underline — Flowbite outline icon."""
@@ -204,13 +152,11 @@ def get_svg_underline(color: str = '#4f5f6f') -> str:
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-width="2"'        f' d="M6 19h12M8 5v8a4 4 0 0 0 8 0V5M6 5h4m4 0h4"/>'        '</svg>'
     )
 
-
 def get_svg_list_bullet(color: str = '#4f5f6f') -> str:
     """Bullet list — Flowbite outline icon."""
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-width="2"'        f' d="M9 6h11M9 12h11M9 18h11M5 6v.01M5 12v.01M5 18v.01"/>'        '</svg>'
     )
-
 
 def get_svg_clear_format(color: str = '#4f5f6f') -> str:
     """Clear formatting — Flowbite outline icon."""
@@ -218,13 +164,11 @@ def get_svg_clear_format(color: str = '#4f5f6f') -> str:
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">'        f'<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"'        f' d="M6 5h12M6 9h12m-8 4h8m-6 4h6M3 19l4-4m0 0 4-4m-4 4-4-4m4 4 4 4"/>'        '</svg>'
     )
 
-
 def get_svg_minimize_btn(color: str = '#ffffff') -> str:
     """Minimize button — horizontal line, Flowbite-style. viewBox 14x14 square."""
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">'        f'<line x1="2" y1="7" x2="12" y2="7" stroke="{color}"'        f' stroke-width="1.5" stroke-linecap="round"/>'        '</svg>'
     )
-
 
 def get_svg_maximize_btn(color: str = '#ffffff') -> str:
     """Maximize button — open square. viewBox 14x14 square."""
@@ -232,20 +176,17 @@ def get_svg_maximize_btn(color: str = '#ffffff') -> str:
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">'        f'<rect x="2" y="2" width="10" height="10" rx="1"'        f' stroke="{color}" stroke-width="1.5" fill="none"/>'        '</svg>'
     )
 
-
 def get_svg_restore_btn(color: str = '#ffffff') -> str:
     """Restore button — two overlapping squares. viewBox 14x14 square."""
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">'        f'<rect x="4" y="1" width="9" height="9" rx="1"'        f' stroke="{color}" stroke-width="1.5" fill="none"/>'        f'<rect x="1" y="4" width="9" height="9" rx="1"'        f' stroke="{color}" stroke-width="1.5" fill="{color}" fill-opacity="0.0"/>'        f'<rect x="1" y="4" width="9" height="9" rx="1"'        f' stroke="{color}" stroke-width="1.5" fill="none"/>'        '</svg>'
     )
 
-
 def get_svg_close_btn(color: str = '#ffffff') -> str:
     """Close button X — Flowbite outline style. viewBox 14x14 square."""
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">'        f'<path stroke="{color}" stroke-linecap="round" stroke-linejoin="round"'        f' stroke-width="1.5" d="M1 1 13 13M13 1 1 13"/>'        '</svg>'
     )
-
 
 def get_svg_plus_separator(color: str = '#888888') -> str:
     """Plus separator icon for dual format button. viewBox 10x10 square."""

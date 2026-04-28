@@ -40,7 +40,7 @@ class _DialogTitleBar(QWidget):
         # Background
         pal = self.palette()
         pal.setColor(pal.ColorRole.Window,
-                     QColor(QSSA.get('titlebar_bg', '#4f5f6f')))
+                     QColor(QSSA.get('titlebar_bg')))
         self.setAutoFillBackground(True)
         self.setPalette(pal)
 
@@ -66,11 +66,11 @@ class _DialogTitleBar(QWidget):
         self.closeBtn.clicked.connect(parent.close)
 
         # Apply colors from QSSA
-        btn_text      = QColor(QSSA.get('titlebar_btn_text',        '#FFFFFF'))
-        btn_hover     = QColor(QSSA.get('titlebar_btn_hover_bg',    '#59c2e6'))
-        btn_pressed   = QColor(QSSA.get('titlebar_btn_pressed_bg',  '#3aaac8'))
-        close_hover   = QColor(QSSA.get('titlebar_close_hover_bg',  '#fc4c7a'))
-        close_pressed = QColor(QSSA.get('titlebar_close_pressed_bg','#d93060'))
+        btn_text      = QColor(QSSA.get('titlebar_btn_text'))
+        btn_hover     = QColor(QSSA.get('titlebar_btn_hover_bg'))
+        btn_pressed   = QColor(QSSA.get('titlebar_btn_pressed_bg'))
+        close_hover   = QColor(QSSA.get('titlebar_close_hover_bg'))
+        close_pressed = QColor(QSSA.get('titlebar_close_pressed_bg'))
 
         self.maxBtn.setNormalColor(btn_text)
         self.maxBtn.setHoverColor(btn_text)

@@ -139,11 +139,6 @@ class DropDownComboBox(QComboBox):
         QTimer.singleShot(0, _forceBelow)
 
 
-def applyComboBoxFix(comboBox):
-    """Deprecated — use DropDownComboBox instead."""
-    pass
-
-
 class ThemedDateEdit(QDateEdit):
     """
     QDateEdit that enforces the theme min-height and min-width at the Python
