@@ -15,6 +15,7 @@ from PySide6.QtCore import Qt, Signal, QByteArray, QRectF
 from PySide6.QtGui import QFont, QColor, QPainter, QPixmap, QIcon
 from PySide6.QtSvg import QSvgRenderer
 from theme import QSSA
+from svgs import get_svg_chevron
 
 class CardWidget(QWidget):
     """
@@ -153,25 +154,13 @@ class CardWidget(QWidget):
     def _chevronPixmap(expanded=True, size=16, color="#ffffff"):
         """
         Generate a chevron SVG as a QPixmap.
+        Uses centralized get_svg_chevron from svgs.py.
         expanded=True  → chevron pointing down  (body is visible)
         expanded=False → chevron pointing right (body is collapsed)
         color: should match card_header_toggle from the active theme.
-        size: icon dimensions in pixels — independent of the QLabel fixed size.
+        size: icon dimensions in pixels.
         """
-
-        if expanded:
-            path = "M4,8 L12,16 L20,8"
-        else:
-            path = "M8,4 L16,12 L8,20"
-
-        svg = (
-            f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"'
-            f' width="{size}" height="{size}">'
-            f'<path d="{path}" fill="none" stroke="{color}"'
-            f' stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
-            f'</svg>'
-        )
-
+        svg = get_svg_chevron(expanded=expanded, color=color, size=size)
         renderer = QSvgRenderer(QByteArray(svg.encode()))
         pixmap   = QPixmap(size, size)
         pixmap.fill(Qt.transparent)

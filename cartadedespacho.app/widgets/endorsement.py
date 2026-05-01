@@ -74,16 +74,21 @@ class EndorsementTableCard(QWidget):
     """
 
     def __init__(self, label='', isTrec=False, defaultColumns=None,
-                 savedData=None, showCheckbox=True, currency='S/.', parent=None):
+                 savedData=None, showCheckbox=True, currency='S/.', parent=None,
+                 branch='', numero=''):
         super().__init__(parent)
         self._label        = label
         self._isTrec       = isTrec
         self._showCheckbox = showCheckbox
         self._endosatarios = []
         self._currency     = currency
+        self._branch      = branch
+        self._numero     = numero
 
         if savedData and ('rows' in savedData or 'groups' in savedData):
             self._data = copy.deepcopy(savedData)
+            self._branch = savedData.get('branch', branch)
+            self._numero = savedData.get('numero', numero)
         else:
             if isTrec:
                 self._data = {'groups': []}
@@ -189,11 +194,14 @@ class EndorsementTableCard(QWidget):
             self._onCheckChanged(val)
 
     def _rowCount(self):
-        if self._isTrec:
-            return sum(len(g.get('rows', [])) for g in self._data.get('groups', []))
-        if self._data.get('mode') == 'by_endorsee':
-            return sum(len(g.get('rows', [])) for g in self._data.get('groups', []))
-        return len(self._data.get('rows', []))
+        groups = self._data.get('groups', [])
+        rows = self._data.get('rows', [])
+        
+        if self._isTrec or self._data.get('mode') == 'by_endorsee':
+            if groups:
+                return sum(len(g.get('rows', [])) for g in groups)
+            return len(rows)
+        return len(rows)
 
     def _endorseeCount(self):
         """Return number of endorsee groups in Individual mode."""
@@ -348,7 +356,10 @@ class EndorsementTableCard(QWidget):
                 existing[name] = gdata
 
     def getData(self):
-        return copy.deepcopy(self._data)
+        data = copy.deepcopy(self._data)
+        data['branch'] = self._branch
+        data['numero'] = self._numero
+        return data
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -469,29 +480,30 @@ class _EndorsementEditDialog(CustomDialog):
         topBar = QHBoxLayout()
         topBar.setSpacing(QSSA['spacing_endtable_topbar2'])
 
-        # Mode toggle (non-TREC only): Una tabla ↔ Por endosatario
-        if not self._isTrec:
-            self._modeBtn = QPushButton()
-            self._modeBtn.setCheckable(True)
-            self._modeBtn.setProperty('role', 'cesiones-neutral')
-            self._modeBtn.style().unpolish(self._modeBtn)
-            self._modeBtn.style().polish(self._modeBtn)
-            # Checked = 'Por endosatario' (Flujo B), Unchecked = 'Una tabla' (Flujo A)
+        # Mode toggle: Una tabla ↔ Por endosatario (for both TREC and non-TREC)
+        self._modeBtn = QPushButton()
+        self._modeBtn.setCheckable(True)
+        self._modeBtn.setProperty('role', 'cesiones-neutral')
+        self._modeBtn.style().unpolish(self._modeBtn)
+        self._modeBtn.style().polish(self._modeBtn)
+        # Checked = 'Por endosatario' (Flujo B), Unchecked = 'Una tabla' (Flujo A)
+        if self._isTrec:
+            hasGroups = bool(len(self._data.get('groups', [])) > 0 and
+                        any(g.get('name') for g in self._data.get('groups', [])))
+        else:
             hasGroups = bool(self._data.get('mode') == 'by_endorsee' or
                             len(self._data.get('groups', [])) > 0)
-            self._modeBtn.setChecked(hasGroups)
-            self._modeBtn.setText(
-                S.get('endtable_mode_by_endorsee', 'Por endosatario') if hasGroups
-                else S.get('endtable_mode_single', 'Una tabla')
-            )
-            self._modeBtn.setFixedHeight(QSSA['endtable_topbar_height'])
-            self._modeBtn.setAutoDefault(False)
-            self._modeBtn.setDefault(False)
-            self._modeBtn.toggled.connect(self._onModeToggled)
-            topBar.addWidget(self._modeBtn)
-            topBar.addSpacing(12)
-        else:
-            self._modeBtn = None
+        self._modeBtn.setChecked(hasGroups)
+        self._modeBtn.setText(
+            S.get('endtable_mode_by_endorsee', 'Por endosatario') if hasGroups
+            else S.get('endtable_mode_single', 'Una tabla')
+        )
+        self._modeBtn.setFixedHeight(QSSA['endtable_topbar_height'])
+        self._modeBtn.setAutoDefault(False)
+        self._modeBtn.setDefault(False)
+        self._modeBtn.toggled.connect(self._onModeToggled)
+        topBar.addWidget(self._modeBtn)
+        topBar.addSpacing(12)
 
         self._btnAddEndorsee = QPushButton(S['endtable_add_endorsee'])
         self._btnImportTop   = QPushButton(S['endtable_btn_import'])
@@ -532,11 +544,10 @@ class _EndorsementEditDialog(CustomDialog):
         topBar.addWidget(self._btnImportTop)
         topBar.addWidget(self._btnDownload)
         cl.addLayout(topBar)
-        # Visibility after layout is set
-        if not self._isTrec:
-            self._btnAddEndorsee.setVisible(hasGroups)
-            if self._topbarGearBtn is not None:
-                self._topbarGearBtn.setVisible(not hasGroups)
+        # Visibility after layout is set - show Add Endosatario only in Individual mode
+        self._btnAddEndorsee.setVisible(hasGroups)
+        if hasattr(self, '_topbarGearBtn') and self._topbarGearBtn:
+            self._topbarGearBtn.setVisible(not hasGroups)
 
         # Container: QTabWidget for Individual/TREC, QScrollArea for Agrupado
         # Determined after restore — we build both and show the right one
@@ -564,10 +575,15 @@ class _EndorsementEditDialog(CustomDialog):
         self._scroll.setVisible(True)
 
         # Set container mode BEFORE restoring groups so _addGroup routes correctly
-        _byEndorsee_init = (not self._isTrec and
-                            self._data.get('mode') == 'by_endorsee')
+        if self._isTrec:
+            _byEndorsee_init = bool(
+                len(self._data.get('groups', [])) > 0 and
+                any(g.get('name') for g in self._data.get('groups', []))
+            )
+        else:
+            _byEndorsee_init = self._data.get('mode') == 'by_endorsee'
         # Sync modeBtn state so _addGroup reads correct mode via isChecked()
-        if self._modeBtn is not None and not self._isTrec:
+        if self._modeBtn is not None:
             self._modeBtn.blockSignals(True)
             self._modeBtn.setChecked(_byEndorsee_init)
             self._modeBtn.setText(
@@ -577,26 +593,17 @@ class _EndorsementEditDialog(CustomDialog):
         self._updateContainerMode(_byEndorsee_init)
 
         # Restore data — respect saved mode
-        if self._isTrec:
+        if self._modeBtn is not None and self._modeBtn.isChecked():
+            # Individual mode (by_endorsee)
             savedGroups = self._data.get('groups', [])
             if savedGroups:
                 for grp in savedGroups:
                     self._addGroup(grp.get('name', ''), grp.get('columns'), grp.get('rows', []))
             else:
-                self._addGroup()  # one empty TREC group as default
+                self._addGroup()
         else:
-            savedMode = self._data.get('mode', 'single')
-            if savedMode == 'by_endorsee':
-                # Individual mode: restore each group as a card
-                savedGroups = self._data.get('groups', [])
-                if savedGroups:
-                    for grp in savedGroups:
-                        self._addGroup(grp.get('name', ''), grp.get('columns'), grp.get('rows', []))
-                else:
-                    self._addGroup()
-            else:
-                # Agrupado mode: single table with columns/rows at root level
-                self._addGroup('', self._data.get('columns'), self._data.get('rows', []))
+            # Agrupado mode (single table)
+            self._addGroup('', self._data.get('columns'), self._data.get('rows', []))
 
         # Ensure tab 0 is selected after restore
         if self._tabWidget.count() > 0:
@@ -614,12 +621,15 @@ class _EndorsementEditDialog(CustomDialog):
 
     def _addGroup(self, name='', columns=None, rows=None):
         if columns is None:
+            byEndorsee = self._modeBtn is not None and self._modeBtn.isChecked()
             if self._isTrec:
-                columns = ['Equipo', 'Marca', 'Modelo', 'Serie', 'Placa', 'Año', 'Nro. Leasing', 'Suma Asegurada']
+                if byEndorsee:
+                    # Individual mode: standard TREC columns
+                    columns = ['Equipo', 'Marca', 'Modelo', 'Serie', 'Placa', 'Año', 'Nro. Leasing', 'Suma Asegurada']
+                else:
+                    # Agrupado mode: TREC columns + Endosatario
+                    columns = ['Equipo', 'Marca', 'Modelo', 'Serie', 'Placa', 'Año', 'Nro. Leasing', 'Suma Asegurada', 'Endosatario']
             else:
-                # Agrupado = single table with Endosatario column
-                # Individual = per-endorsee cards, Endosatario lives in combo header
-                byEndorsee = self._modeBtn is not None and self._modeBtn.isChecked()
                 if byEndorsee:
                     # Individual: no Endosatario column — it's in the card header combo
                     columns = ['Detalle', f'Monto Endosado {self._currency}']
@@ -637,11 +647,12 @@ class _EndorsementEditDialog(CustomDialog):
             endosatarios=self._endosatarios,
             currency=self._currency,
             canDelete=canDelete,
-            hasHeader=byEndorsee or self._isTrec,
+            hasHeader=byEndorsee,
         )
         grp.sigRemove.connect(lambda g=grp: self._removeGroup(g))
         self._groupWidgets.append(grp)
-        use_tabs = self._isTrec or (self._modeBtn is not None and self._modeBtn.isChecked())
+        # Show tabs only in Individual mode (by_endorsee), never in Agrupado
+        use_tabs = self._modeBtn is not None and self._modeBtn.isChecked()
         if use_tabs:
             tab_num = self._tabWidget.count() + 1
 
@@ -690,7 +701,8 @@ class _EndorsementEditDialog(CustomDialog):
 
     def _updateContainerMode(self, byEndorsee):
         """Switch visible container between QTabWidget (Individual) and QScrollArea (Agrupado)."""
-        use_tabs = byEndorsee or self._isTrec
+        # Show tabs only in Individual mode (by_endorsee)
+        use_tabs = byEndorsee
         self._tabWidget.setVisible(use_tabs)
         self._scroll.setVisible(not use_tabs)
         # Force geometry update so the visible container actually repaints
@@ -714,7 +726,7 @@ class _EndorsementEditDialog(CustomDialog):
             else S.get('endtable_mode_single', 'Agrupado')
         )
         self._btnAddEndorsee.setVisible(checked)
-        if self._topbarGearBtn:
+        if hasattr(self, '_topbarGearBtn') and self._topbarGearBtn:
             self._topbarGearBtn.setVisible(not checked)
 
         if checked:
@@ -861,16 +873,29 @@ class _EndorsementEditDialog(CustomDialog):
                                       S['endtable_template_err'].format(error=str(e)))
 
     def getData(self):
-        if self._isTrec:
-            return {'groups': [gw.getGroupData() for gw in self._groupWidgets]}
+        byEndorsee = self._modeBtn is not None and self._modeBtn.isChecked()
+        if byEndorsee:
+            # Individual mode: multiple groups (one per Endosatario)
+            groups = [gw.getGroupData() for gw in self._groupWidgets]
+            return {'mode': 'by_endorsee', 'groups': groups}
         else:
-            byEndorsee = self._modeBtn is not None and self._modeBtn.isChecked()
-            if byEndorsee:
-                groups = [gw.getGroupData() for gw in self._groupWidgets]
-                return {'mode': 'by_endorsee', 'groups': groups}
-            else:
-                gd = self._groupWidgets[0].getGroupData() if self._groupWidgets else {'columns': [], 'rows': []}
-                return {'mode': 'single', 'columns': gd['columns'], 'rows': gd['rows']}
+            # Agrupado mode: single table, add Endosatario column if not present
+            gd = self._groupWidgets[0].getGroupData() if self._groupWidgets else {'columns': [], 'rows': []}
+            cols = list(gd.get('columns', []))
+            rows = list(gd.get('rows', []))
+            # Add Endosatario column if not present anywhere in columns
+            has_endosatario = any(c.lower() == 'endosatario' for c in cols)
+            if not has_endosatario:
+                grp_name = self._groupWidgets[0]._nameCombo.currentText() if self._groupWidgets else ''
+                # Add Endosatario column at the end
+                cols.append('Endosatario')
+                # Add group name as Endosatario value to each row
+                for row in rows:
+                    if isinstance(row, list):
+                        row.append(grp_name)
+                    elif isinstance(row, dict):
+                        row['Endosatario'] = grp_name
+            return {'mode': 'single', 'columns': cols, 'rows': rows}
 
 
 
@@ -896,7 +921,7 @@ class _GroupEditor(QWidget):
     def _buildLayout(self, name):
         """Build layout. self._hasHeader controls whether header is shown (Individual mode)."""
         from svgs import (get_svg_gear, get_svg_col_add, get_svg_col_remove,
-                          get_svg_col_rename, get_svg_chevron_down, get_svg_chevron_right)
+                          get_svg_col_rename, get_svg_chevron)
 
         outer = QVBoxLayout(self)
         outer.setContentsMargins(*QSSA['margins_group_editor'])
@@ -927,7 +952,7 @@ class _GroupEditor(QWidget):
             self._accordionBtn.setChecked(True)
             self._accordionBtn.setFixedSize(btn_sz, btn_sz)
             self._accordionBtn.setToolTip(S['endtable_accordion_tip'])
-            self._accordionBtn.setIcon(_svg_to_qicon(get_svg_chevron_down(icon_color), icon_sz))
+            self._accordionBtn.setIcon(_svg_to_qicon(get_svg_chevron(expanded=True, color=icon_color, size=icon_sz), icon_sz))
             self._accordionBtn.toggled.connect(self._onAccordionToggled)
             self._accordionBtn.setVisible(False)  # hidden — tab provides navigation
             hl.addWidget(self._accordionBtn)
@@ -1103,10 +1128,10 @@ class _GroupEditor(QWidget):
         self._body.setVisible(expanded)
         self._configPanel.setVisible(expanded and self._gearBtn is not None
                                      and self._gearBtn.isChecked())
-        from svgs import get_svg_chevron_down, get_svg_chevron_right
+        from svgs import get_svg_chevron
         icon_color = QSSA.get('card_header_toggle', '#ffffff')
         sz = QSSA['group_editor_accordion_size'][1] - 8
-        svg = get_svg_chevron_down(icon_color) if expanded else get_svg_chevron_right(icon_color)
+        svg = get_svg_chevron(expanded=expanded, color=icon_color, size=sz)
         self._accordionBtn.setIcon(_svg_to_qicon(svg, sz))
         # Collapse height to header only — prevents blank space between groups
         self.setSizePolicy(

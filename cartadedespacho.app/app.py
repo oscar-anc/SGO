@@ -531,6 +531,9 @@ class MainApp(FramelessMainWindow):
             from_annex = self.pageStack.currentWidget() == self.pageAnnex
             if from_annex:
                 self.annexData = self.pageAnnex.collectAnnexData()
+                _cesiones = self.annexData.get('cesiones', {})
+                if _cesiones:
+                    self.endorsementData = _cesiones
 
             # Step 2: pre-flight check — Manual selected but no optional items
             # Must happen BEFORE the save dialog so the user can correct and retry
@@ -596,12 +599,35 @@ class MainApp(FramelessMainWindow):
                     else:
                         errors.append(f"Garantías: {guaranteesResult['error']}")
 
-            # Step 4c: generate Cesiones de Derecho if endorsementType == Detallado
-            if (self.formData.get('endorsementType') == 'Detallado'
-                    and from_annex and self.endorsementData):
+            # Step 4c: generate Cesiones de Derecho if endorsementType == Detallado and has cesion data
+            has_cesion_data = False
+            if from_annex and self.endorsementData:
+                for key, entry in self.endorsementData.items():
+                    if not isinstance(entry, dict):
+                        continue
+                    branch = entry.get('branch', '')
+                    if not branch:
+                        continue
+                    if entry.get('checked', True) is not False:
+                        has_rows = isinstance(entry.get('rows'), list) and len(entry.get('rows', [])) > 0
+                        has_groups = isinstance(entry.get('groups'), list) and len(entry.get('groups', [])) > 0
+                        if has_rows or has_groups:
+                            has_cesion_data = True
+                            break
+
+            if (self.formData.get('endorsementType') == 'Detallado' and has_cesion_data):
+                # Build insured name and policy number mappings from pagePolicies widgets
+                insuredNames = {}
+                policyNumbers = {}
+                for insWidget in [self.pagePolicies.mainInsured] + self.pagePolicies.additionalInsuredList:
+                    insuredNames[insWidget.widgetId] = insWidget.insuredName.text()
+                    for pol in insWidget.policyList:
+                        key = f"{insWidget.widgetId}::{pol.widgetId}"
+                        policyNumbers[key] = pol.policyNum.text()
+
                 cesionesPath   = os.path.join(folder, 'cesion_de_derechos.docx')
                 cesionesResult = generateCesiones(
-                    self.formData, self.endorsementData, cesionesPath
+                    self.formData, self.endorsementData, cesionesPath, insuredNames, policyNumbers
                 )
                 if cesionesResult['success']:
                     generated.append(S['doc_item_cesiones'])

@@ -84,20 +84,22 @@ def get_svg_col_rename(color: str = '#FFFFFF') -> str:
         f'</svg>'
     )
 
-def get_svg_chevron_down(color: str = '#858889') -> str:
-    """Chevron pointing down — for accordion button."""
+def get_svg_chevron(expanded: bool = True, color: str = '#858889', size: int = 18) -> str:
+    """
+    Chevron icon for collapsible cards (stroke style).
+    Uses same paths as original CardWidget._chevronPixmap.
+    expanded=True  → chevron pointing down (body visible)
+    expanded=False → chevron pointing right (body collapsed)
+    """
+    if expanded:
+        path = "M4,8 L12,16 L20,8"
+    else:
+        path = "M8,4 L16,12 L8,20"
     return (
-        f'<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">'
-        f'<g transform="rotate(90 8 8)"><path d="M8.172 8 3.586 3.414 6.414.586 13.828 8l-7.414 7.414-2.828-2.828z" fill="{color}"/>'
-        f'</g>'
-        f'</svg>'
-    )
-
-def get_svg_chevron_right(color: str = '#858889') -> str:
-    """Chevron pointing right — for collapsed accordion button."""
-    return (
-        f'<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">'
-        f'<path d="M8.172 8 3.586 3.414 6.414.586 13.828 8l-7.414 7.414-2.828-2.828z" fill="{color}"/>'
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"'
+        f' width="{size}" height="{size}">'
+        f'<path d="{path}" fill="none" stroke="{color}"'
+        f' stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
         f'</svg>'
     )
 

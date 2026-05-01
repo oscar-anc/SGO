@@ -109,7 +109,7 @@ class GuaranteesEditor(QWidget):
         self._toggleBtn.setChecked(True)  # expanded by default
         self._toggleBtn.setFlat(True)
         self._toggleBtn.setFixedSize(*QSSA['annex_toolbar_btn_size'])
-        color = QSSA.get('card_header_toggle', '#ffffff')
+        color = QSSA.get('card_header_toggle')
         self._toggleBtn.setIcon(CardWidget._chevronPixmap(expanded=True, color=color))
         self._toggleBtn.toggled.connect(self._onToggle)
         headerLayout.addWidget(self._toggleBtn)
@@ -133,10 +133,10 @@ class GuaranteesEditor(QWidget):
             from PySide6.QtGui import QIcon, QPixmap
             from PySide6.QtCore import QByteArray
             from theme import QSSA as _AT
-            icon_color = _AT.get('toolbar_button_text', '#4f5f6f')
-            btn_w      = int(_AT.get('toolbar_btn_width',  '28'))
-            btn_h      = int(_AT.get('toolbar_btn_height', '28'))
-            icon_sz    = int(_AT.get('toolbar_btn_icon_size', '14'))
+            icon_color = _AT.get('toolbar_button_text')
+            btn_w      = int(_AT.get('toolbar_btn_width'))
+            btn_h      = int(_AT.get('toolbar_btn_height'))
+            icon_sz    = int(_AT.get('toolbar_btn_icon_size'))
             btn = QPushButton()
             btn.setObjectName('ToolbarButton')
             btn.setToolTip(tooltip)
@@ -257,7 +257,7 @@ class GuaranteesEditor(QWidget):
 
     def _onToggle(self, expanded: bool):
         self._body.setVisible(expanded)
-        color = QSSA.get('card_header_toggle', '#ffffff')
+        color = QSSA.get('card_header_toggle')
         self._toggleBtn.setIcon(
             CardWidget._chevronPixmap(expanded=expanded, color=color)
         )
@@ -679,6 +679,7 @@ class PageAnnex(QWidget):
             for pol in pols:
                 key    = pol['key']
                 branch = pol['branch']
+                numero = pol['numero']
                 isTrec = pol['isTrec']
                 saved  = endorsementData.get(key, {})
 
@@ -693,6 +694,8 @@ class PageAnnex(QWidget):
                     savedData=saved if saved else None,
                     showCheckbox=hasManyPolicies,
                     currency=currency,
+                    branch=branch,
+                    numero=numero,
                 )
                 tableCard._endosatarios = endosatarios
                 tableCard._policyKey    = key
