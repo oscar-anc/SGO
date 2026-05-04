@@ -1,29 +1,34 @@
-# coding: utf-8
 """
-svgs.py — Íconos SVG de la aplicación como constantes de string.
+svgs.py — Centralized SVG icon assets for MailDeDespacho.
 
-Uso:
-    from svgs import SVG
-    renderer = QSvgRenderer(QByteArray(SVG.RRGG.encode()))
-    # o con helpers:
-    pixmap = svg_pixmap(SVG.RRGG, size=QSize(24, 24), color="#FFFFFF")
-    label.setPixmap(pixmap)
+ARCHITECTURE
+-------------
+All SVGs are stored as class constants with 'ICON_COLOR' placeholder.
+Use helper functions to apply colors at runtime.
 
-Convenciones:
-  - Todos los paths usan fill="currentColor" o fill="#HEXCOLOR" explícito.
-  - viewBox siempre "0 0 24 24" (Material Design grid).
-  - Para recolorear en runtime, usa svg_colored() pasando el SVG y el color deseado.
-  - Los SVG de íconos de botones usan fill="ICON_COLOR" como placeholder
-    reemplazable con svg_colored().
+USAGE
+------
+    from svgs import SVG, apply_svg_icon
+    apply_svg_icon(button, SVG.RRGG, QSize(24, 24), "#FFFFFF")
 
-Grupos:
-  LINEA_NEGOCIO  → RRGG, TRANSPORTES
-  TIPO_PLANTILLA → POLIZA, ENDOSO, DECLARACION
-  MODO_ENVIO     → CORREO_NUEVO, RESPONDER_TODOS
-  ACCIONES       → OUTLOOK, LIMPIAR, PEGAR, AGREGAR, ELIMINAR
-  TITLEBAR       → MINIMIZAR, MAXIMIZAR, RESTAURAR, CERRAR
-  MSG            → ADVERTENCIA
-  MISC           → COMBO_ARROW, CHECKMARK
+    from svgs import SVG, svg_pixmap
+    pixmap = svg_pixmap(SVG.RRGG, QSize(24, 24), color="#FFFFFF")
+
+COLOR STRATEGY
+--------------
+- All paths use fill="ICON_COLOR" as replaceable placeholder
+- Use svg_colored() to replace ICON_COLOR with desired hex color
+- Helper functions handle color replacement automatically
+
+GROUPS
+------
+LINEA_NEGOCIO  → RRGG, TRANSPORTES
+TIPO_PLANTILLA → POLIZA, ENDOSO, DECLARACION
+MODO_ENVIO     → CORREO_NUEVO, RESPONDER_TODOS
+ACCIONES       → OUTLOOK, LIMPIAR, PEGAR, AGREGAR, ELIMINAR
+TITLEBAR       → MINIMIZAR, MAXIMIZAR, RESTAURAR, CERRAR
+MSG            → ADVERTENCIA, INFORMACION, EXITO
+MISC           → COMBO_ARROW, ARCHIVO_MSG, ADJUNTO
 """
 
 import re
@@ -33,11 +38,11 @@ from PySide6.QtSvg import QSvgRenderer
 
 
 # =============================================================================
-# RAW SVG STRINGS
+# SVG CONSTANTS
 # =============================================================================
 
 class SVG:
-    """Constantes SVG completas — strings listos para QSvgRenderer."""
+    """SVG icon constants with replaceable ICON_COLOR placeholder."""
 
     # ── Línea de negocio ──────────────────────────────────────────────────────
 
@@ -148,7 +153,7 @@ class SVG:
     # ── Mensajes / diálogos ───────────────────────────────────────────────────
 
     ADVERTENCIA = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path fill="ICON_COLOR" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+        <path fill="ICON_COLOR" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2V7h2v4z"/>
     </svg>"""
 
     INFORMACION = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -186,34 +191,34 @@ class SVG:
 
 def svg_colored(svg_str: str, color: str) -> str:
     """
-    Reemplaza el placeholder 'ICON_COLOR' en el SVG por el color dado.
+    Replace the 'ICON_COLOR' placeholder in the SVG with the given color.
 
     Args:
-        svg_str: SVG raw string de la clase SVG
-        color:   Color CSS hex, ej. '#FFFFFF' o '#0078d4'
+        svg_str: Raw SVG string from SVG class
+        color:   CSS hex color, e.g. '#FFFFFF' or '#0078d4'
 
     Returns:
-        SVG string con el color aplicado
+        SVG string with color applied
     """
     return svg_str.replace("ICON_COLOR", color)
 
 
 def svg_pixmap(svg_str: str, size: QSize, color: str = "#4f5f6f") -> QPixmap:
     """
-    Renderiza un SVG string a QPixmap con el color y tamaño indicados.
+    Render an SVG string to QPixmap with the specified color and size.
 
     Args:
-        svg_str: SVG raw string de la clase SVG
-        size:    QSize del pixmap resultante
-        color:   Color hex para reemplazar ICON_COLOR
+        svg_str: Raw SVG string from SVG class
+        size:    QSize of the resulting pixmap
+        color:   Hex color to replace ICON_COLOR
 
     Returns:
-        QPixmap renderizado (con alpha si hay transparencia)
+        Rendered QPixmap (with alpha if transparent)
     """
     colored = svg_colored(svg_str, color)
     renderer = QSvgRenderer(QByteArray(colored.encode("utf-8")))
     pixmap = QPixmap(size)
-    pixmap.fill(QColor(0, 0, 0, 0))  # fondo transparente
+    pixmap.fill(QColor(0, 0, 0, 0))  # transparent background
     painter = QPainter(pixmap)
     renderer.render(painter)
     painter.end()
@@ -222,15 +227,15 @@ def svg_pixmap(svg_str: str, size: QSize, color: str = "#4f5f6f") -> QPixmap:
 
 def svg_icon(svg_str: str, size: QSize, color: str = "#4f5f6f") -> QIcon:
     """
-    Crea un QIcon desde un SVG string.
+    Create a QIcon from an SVG string.
 
     Args:
-        svg_str: SVG raw string de la clase SVG
-        size:    QSize del ícono
-        color:   Color hex
+        svg_str: Raw SVG string from SVG class
+        size:    QSize of the icon
+        color:   Hex color to replace ICON_COLOR
 
     Returns:
-        QIcon listo para asignar con button.setIcon()
+        QIcon ready to assign with button.setIcon()
     """
     return QIcon(svg_pixmap(svg_str, size, color))
 
@@ -242,14 +247,14 @@ def apply_svg_icon(
     color: str = "#4f5f6f"
 ) -> None:
     """
-    Aplica un ícono SVG directamente a un QPushButton.
-    Shortcut para el patrón más común: crear ícono y asignarlo.
+    Apply an SVG icon directly to a QPushButton.
+    Shortcut for the most common pattern: create icon and assign it.
 
     Args:
-        button:  QPushButton destino
-        svg_str: SVG raw string de la clase SVG
-        size:    QSize del ícono
-        color:   Color hex
+        button:  Target QPushButton
+        svg_str: Raw SVG string from SVG class
+        size:    QSize of the icon
+        color:   Hex color to replace ICON_COLOR
     """
     button.setIcon(svg_icon(svg_str, size, color))
     button.setIconSize(size)
