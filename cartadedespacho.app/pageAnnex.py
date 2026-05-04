@@ -1,5 +1,9 @@
 from strings import S
 from theme import QSSA
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment
+from openpyxl.comments import Comment
+import re
 """
 Página 5: Generación de Anexos
 
@@ -8,14 +12,14 @@ Lets the user choose which additional documents to generate alongside
 the Carta de Despacho:
 
   1. Manual de Procedimiento en Caso de Siniestros
-     — same 12 optional checkboxes as the old PageManual dialog,
-       plus a "Seleccionar todos" master checkbox.
+      — same 12 optional checkboxes as the old PageManual dialog,
+        plus a "Seleccionar todos" master checkbox.
 
   2. Garantías Particulares
-     — one collapsible section per registered policy branch.
-       Each section contains a QTextEdit with a minimal toolbar
-       (bullet list and numbered list only).
-       Produces one Word page per policy with a page break between them.
+      — one collapsible section per registered policy branch.
+        Each section contains a QTextEdit with a minimal toolbar
+        (bullet list and numbered list only).
+        Produces one Word page per policy with a page break between them.
 
 Navigation:
   ATRAS  → back to whatever page navigated here (pageFinance or pagePolicies)
@@ -40,6 +44,7 @@ from PySide6.QtCore import Signal, Qt, QMimeData
 from PySide6.QtGui  import QTextListFormat, QTextCursor
 from widgets import NoNewlineLineEdit, CardWidget, EndorsementPolicyCard, InsuredGroupCard, EndorsementTableCard, GuaranteesCard, GuaranteesTableCard, CustomMessageBox
 from helpers import resource_path
+from svgs import SVG_EXCEL_IMPORT, SVG_DOWNLOAD_TEMPLATE, get_svg_download_template
 
 
 # ── Manual item definitions (mirrors the old pageManual.py) ───────────────────
@@ -58,7 +63,6 @@ class CleanTextEdit(QTextEdit):
     the external source do not bleed into the document.
     The user then applies bullets or numbering manually via the toolbar.
     """
-
     def insertFromMimeData(self, source: QMimeData):
         """Override paste to always insert plain text only."""
         if source.hasText():
@@ -79,7 +83,6 @@ class GuaranteesEditor(QWidget):
     html property returns the current QTextEdit content as HTML for persistence.
     setHtml() restores previously saved content.
     """
-
     def __init__(self, branch_name, parent=None):
         super().__init__(parent)
         self._branch = branch_name
@@ -90,7 +93,7 @@ class GuaranteesEditor(QWidget):
         outerLayout.setContentsMargins(*QSSA['margins_annex_toolbar_outer'])
         outerLayout.setSpacing(QSSA['spacing_annex_toolbar_outer'])
 
-        # ── Header bar ────────────────────────────────────────────────────────
+        # ── Header bar ───────────────────────────────────────────────────────
         headerWidget = QWidget()
         headerWidget.setObjectName("CardHeader")
         headerWidget.setMinimumHeight(QSSA['annex_toolbar_min_height'])
@@ -139,7 +142,7 @@ class GuaranteesEditor(QWidget):
             icon_sz    = int(_AT.get('toolbar_btn_icon_size'))
             btn = QPushButton()
             btn.setObjectName('ToolbarButton')
-            btn.setToolTip(tooltip)
+            btn.setTooltip(tooltip)
             btn.setFixedSize(btn_w, btn_h)
             px = QPixmap()
             px.loadFromData(QByteArray(svg_fn(icon_color).encode('utf-8')), 'SVG')
@@ -516,7 +519,7 @@ class PageAnnex(QWidget):
 
         self.mainLayout.insertWidget(0, cardManual)
 
-        # ── Card 2: Garantías Particulares ────────────────────────────────────
+        # ── Card 2: Garantías Particulares ────────────────────────────
         cardGarantias  = CardWidget(S["card_guarantees"], collapsible=False)
         guaranteesInner = QVBoxLayout()
 
@@ -668,6 +671,30 @@ class PageAnnex(QWidget):
         cardCesiones  = CardWidget(S['card_cesiones'], collapsible=False)
         cesionesOuter = QVBoxLayout()
 
+        # Global action buttons at the top - right aligned
+        globalBtnLayout = QHBoxLayout()
+        globalBtnLayout.addStretch()
+
+        self._btnGlobalImport = _makeSvgButton(
+            SVG_EXCEL_IMPORT, size=32, icon_size=18,
+            tooltip=S['cesiones_global_import'], role='endtable-import'
+        )
+        self._btnGlobalDownload = _makeSvgButton(
+            SVG_DOWNLOAD_TEMPLATE, size=32, icon_size=18,
+            tooltip=S['cesiones_global_download'], role='endtable-import'
+        )
+        self._btnGlobalImport.clicked.connect(self._onGlobalImport)
+        self._btnGlobalDownload.clicked.connect(self._onGlobalDownload)
+
+        # Uniform height
+        btn_height = QSSA.get('endtable_topbar_height', 32)
+        self._btnGlobalImport.setFixedHeight(btn_height)
+        self._btnGlobalDownload.setFixedHeight(btn_height)
+
+        globalBtnLayout.addWidget(self._btnGlobalImport)
+        globalBtnLayout.addWidget(self._btnGlobalDownload)
+        cesionesOuter.addLayout(globalBtnLayout)
+
         for grp in insuredGroups:
             insName = grp['insuredName']
             pols    = grp['policies']
@@ -750,6 +777,137 @@ class PageAnnex(QWidget):
                     gc._toggleBtn.setChecked(True)
                     gc._body.setVisible(True)
                     gc._toggleBtn.blockSignals(False)
+
+    def _onGlobalImport(self):
+        """Global import: reads Excel and distributes rows to matching policy cards."""
+        import openpyxl
+        from PySide6.QtWidgets import QFileDialog
+        from widgets import CustomMessageBox
+
+        path, _ = QFileDialog.getOpenFileName(
+            self, S['cesiones_global_import_title'], '', 'Excel (*.xlsx *.xls)'
+        )
+        if not path:
+            return
+        try:
+            wb = openpyxl.load_workbook(path, data_only=True)
+            ws = wb.active
+            rows_iter = list(ws.iter_rows(values_only=True))
+            if not rows_iter:
+                return
+            excelCols = [str(c) if c is not None else '' for c in rows_iter[0]]
+            excelRows = [[str(c) if c is not None else '' for c in row]
+                         for row in rows_iter[1:] if any(c is not None for c in row)]
+            
+            # Group rows by policy using 'Ramo' and optionally 'Nro. Póliza' columns
+            ramo_idx = None
+            nro_idx = None
+            for i, c in enumerate(excelCols):
+                cl = c.lower()
+                if 'ramo' in cl:
+                    ramo_idx = i
+                if any(k in cl for k in ['nro', 'numero', 'poliza']):
+                    nro_idx = i
+            
+            # Build lookup: (ramo, numero) -> list of rows
+            from collections import defaultdict
+            grouped = defaultdict(list)
+            for row in excelRows:
+                ramo = row[ramo_idx].strip() if ramo_idx is not None and ramo_idx < len(row) else ''
+                numero = row[nro_idx].strip() if nro_idx is not None and nro_idx < len(row) else ''
+                grouped[(ramo, numero)].append(row)
+            
+            total_imported = 0
+            for (ramo, numero), rows in grouped.items():
+                # Find matching EndorsementTableCard
+                for card_key, card in self._cesionesWidgets.items():
+                    card_ramo = card._branch
+                    card_numero = getattr(card, '_numero', '')
+                    if card_ramo == ramo and (not numero or card_numero == numero):
+                        # Import into this card
+                        if card._isTrec:
+                            card._importTrec(excelCols, rows)
+                        else:
+                            card._importStandard(excelCols, rows)
+                        card._updateCountLabel()
+                        total_imported += len(rows)
+                        break
+            
+            CustomMessageBox.information(
+                self, S['cesiones_global_import_title'],
+                S['cesiones_global_import_ok'].format(n=total_imported)
+            )
+        except Exception as e:
+            CustomMessageBox.critical(
+                self, S['cesiones_global_import_title'],
+                S['cesiones_global_import_err'].format(error=str(e))
+            )
+
+    def _onGlobalDownload(self):
+        """Generate Excel template with all registered policies and insurers."""
+        import openpyxl
+        from openpyxl.styles import Font, PatternFill, Alignment
+        from PySide6.QtWidgets import QFileDialog
+        from widgets import CustomMessageBox
+
+        path, _ = QFileDialog.getSaveFileName(
+            self, S['cesiones_global_download_title'],
+            'plantilla_global_cesiones.xlsx', 'Excel (*.xlsx)'
+        )
+        if not path:
+            return
+        try:
+            wb = openpyxl.Workbook()
+            ws = wb.active
+            ws.title = 'Plantilla Global'
+
+            # Build headers from all registered policies
+            headers = ['Asegurado', 'Ramo', 'Nro. Póliza']
+            # Collect unique columns from all cards
+            all_cols = set()
+            for card_key, card in self._cesionesWidgets.items():
+                if card._data.get('groups'):
+                    for grp in card._data['groups']:
+                        all_cols.update(grp.get('columns', []))
+                else:
+                    all_cols.update(card._data.get('columns', []))
+
+            # Standard columns
+            currency = getattr(self, '_currency', 'S/.')
+            base_cols = ['Detalle', f'Monto Endosado {currency}', 'Endosatario']
+            for c in base_cols:
+                if c not in all_cols:
+                    all_cols.add(c)
+            extra_cols = sorted(all_cols - set(base_cols))
+            headers.extend(base_cols[:2])  # Detalle, Monto
+            headers.extend(extra_cols)
+            if 'Endosatario' in all_cols:
+                headers.append('Endosatario')
+
+            for ci, h in enumerate(headers, 1):
+                cell = ws.cell(row=1, column=ci, value=h)
+                cell.font = Font(bold=True, color='FFFFFF')
+                cell.fill = PatternFill('solid', fgColor='217346')
+                cell.alignment = Alignment(horizontal='center')
+
+            # Add rows for each policy
+            row_num = 2
+            for card_key, card in self._cesionesWidgets.items():
+                ws.cell(row=row_num, column=1, value='')
+                ws.cell(row=row_num, column=2, value=card._branch)
+                ws.cell(row=row_num, column=3, value=getattr(card, '_numero', ''))
+                row_num += 1
+
+            wb.save(path)
+            CustomMessageBox.information(
+                self, S['cesiones_global_download_title'],
+                S['cesiones_global_download_ok'].format(path=path)
+            )
+        except Exception as e:
+            CustomMessageBox.critical(
+                self, S['cesiones_global_download_title'],
+                S['cesiones_global_download_err'].format(error=str(e))
+            )
 
     def _onManualAnswerChanged(self):
         """Show/hide the checkbox area based on Sí/No selection."""
@@ -908,9 +1066,9 @@ class PageAnnex(QWidget):
         return selected
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────
 # CESIONES DE DERECHO WIDGETS
-# ─────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────
 
 def _makeSvgButton(svg_str, object_name='', size=32, icon_size=18, tooltip='', role=''):
     """
@@ -1246,7 +1404,7 @@ class TrecGroupWidget(CardWidget):
         self._tree.blockSignals(False)
         self._tree.itemSelectionChanged.connect(self._onSelectionChanged)
 
-    _REMOVE_CALLBACK = None  # set externally by TrecWidget
+    _REMOVE_CALLBACK = None # set externally by TrecWidget
 
     def _onRemove(self):
         if callable(self._REMOVE_CALLBACK):
@@ -1308,7 +1466,6 @@ class TrecGroupWidget(CardWidget):
         if not path:
             return
         try:
-            import openpyxl, re
             wb = openpyxl.load_workbook(path, data_only=True)
             ws = wb.active
             added = 0
@@ -1340,9 +1497,6 @@ class TrecGroupWidget(CardWidget):
         if not path:
             return
         try:
-            import openpyxl
-            from openpyxl.styles import Font, PatternFill, Alignment
-            from openpyxl.comments import Comment
             wb = openpyxl.Workbook()
             ws = wb.active
             headers = [
@@ -1461,7 +1615,6 @@ class TrecWidget(QWidget):
         if not path:
             return
         try:
-            import openpyxl
             wb = openpyxl.load_workbook(path, data_only=True)
             ws = wb.active
             groups_data = {}
@@ -1473,7 +1626,7 @@ class TrecWidget(QWidget):
                     continue
                 vals = [str(c) if c is not None else '' for c in row[:9]]
                 entidad = vals[0].strip()
-                data_vals = vals[1:9]  # cols 1-8: equipo..suma
+                data_vals = vals[1:9] # cols 1-8: equipo..suma
 
                 suma = data_vals[6] if len(data_vals) > 6 else ''
                 if suma and re.search(r'\d\.\d{3}', suma):
@@ -1511,9 +1664,6 @@ class TrecWidget(QWidget):
         if not path:
             return
         try:
-            import openpyxl
-            from openpyxl.styles import Font, PatternFill, Alignment
-            from openpyxl.comments import Comment
             wb = openpyxl.Workbook()
             ws = wb.active
             headers = [

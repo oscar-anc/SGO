@@ -367,6 +367,15 @@ S = {
     'btn_import_excel':              'IMPORTAR EXCEL',
     'btn_download_template':         'DESCARGAR PLANTILLA',
 
+    # ── Page 5 — Annex: Global Cesiones buttons ────────────────────────────
+    'cesiones_global_import':        'IMPORTAR EXCEL (GLOBAL)',
+    'cesiones_global_download':      'DESCARGAR PLANTILLA (GLOBAL)',
+    'cesiones_global_import_title':  'Importar Excel Global',
+    'cesiones_global_download_title':'Descargar Plantilla Global',
+    'cesiones_global_import_ok':     'Se importaron {n} filas en total.',
+    'cesiones_global_import_err':    'Error en importación global:\n{error}',
+    'cesiones_global_download_ok':   'Plantilla global guardada en:\n{path}',
+    'cesiones_global_download_err':  'Error al guardar plantilla global:\n{error}',
 
 
     # ── helpers.py: File not found errors ────────────────────────────────────

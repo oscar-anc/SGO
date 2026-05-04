@@ -20,6 +20,8 @@ from PySide6.QtGui import QIcon, QPixmap, QFont, QColor
 from theme import QSSA
 from strings import S
 import json as _json
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment
 try:
     _DB = _json.load(open('db.json', encoding='utf-8'))
 except Exception:
@@ -159,13 +161,11 @@ class EndorsementTableCard(QWidget):
 
         self._btnView   = _hbtn(SVG_VIEW,         'endtable-view',   S['endtable_btn_view'])
         self._btnEdit   = _hbtn(SVG_EDIT,         'endtable-edit',   S['endtable_btn_edit'])
-        self._btnImport = _hbtn(SVG_EXCEL_IMPORT, 'endtable-import', S['endtable_btn_import'])
 
         self._btnView.clicked.connect(self._openViewDialog)
         self._btnEdit.clicked.connect(self._openEditDialog)
-        self._btnImport.clicked.connect(self._openImportDialog)
 
-        for btn in (self._btnView, self._btnEdit, self._btnImport):
+        for btn in (self._btnView, self._btnEdit):
             hl.addWidget(btn)
             if self._showCheckbox:
                 btn.setVisible(False)  # hidden until checked
@@ -175,11 +175,11 @@ class EndorsementTableCard(QWidget):
 
         # Show buttons if already checked at init
         if self._showCheckbox and self._cb and self._cb.isChecked():
-            for btn in (self._btnView, self._btnEdit, self._btnImport):
+            for btn in (self._btnView, self._btnEdit):
                 btn.setVisible(True)
 
     def _onCheckChanged(self, checked):
-        for btn in (self._btnView, self._btnEdit, self._btnImport):
+        for btn in (self._btnView, self._btnEdit):
             btn.setVisible(checked)
         self._updateCountLabel()
 

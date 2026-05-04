@@ -195,3 +195,17 @@ def get_svg_plus_separator(color: str = '#888888') -> str:
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">'        f'<line x1="5" y1="1" x2="5" y2="9" stroke="{color}"'        f' stroke-width="1.5" stroke-linecap="round"/>'        f'<line x1="1" y1="5" x2="9" y2="5" stroke="{color}"'        f' stroke-width="1.5" stroke-linecap="round"/>'        '</svg>'
     )
+
+def get_svg_download_template(color: str = '#858889') -> str:
+    """Download template icon - downward arrow into document. viewBox 24x24."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        f'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        f'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>'
+        f'<polyline points="14 2 14 8 20 8"/>'
+        f'<line x1="12" y1="18" x2="12" y2="12"/>'
+        f'<polyline points="9 15 12 18 15 15"/>'
+        f'</svg>'
+    )
+
+SVG_DOWNLOAD_TEMPLATE = get_svg_download_template()
