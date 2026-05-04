@@ -135,18 +135,36 @@ def get_svg_download_template(color: str = '#858889') -> str:
 SVG_DOWNLOAD_TEMPLATE = get_svg_download_template()
 
 
-# Fixed-color icons (no parameterization needed)
-SVG_VIEW = """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
-  <path fill-rule="evenodd" clip-rule="evenodd" d="M10 .5a9.5 9.5 0 1 0 0 19c2.082 0 4.008-.67 5.573-1.806l4.72 4.72a1 1 0 0 0 1.414 0l.707-.707a1 1 0 0 0 0-1.414l-4.72-4.72A9.46 9.46 0 0 0 19.5 10 9.5 9.5 0 0 0 10 .5M3.5 10a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0" fill="#858889"/>
-</svg>"""
+def get_svg_view(color: str = '#858889') -> str:
+    """View/eye icon. Default gray (#858889)."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">'
+        f'<path fill-rule="evenodd" clip-rule="evenodd" d="M10 .5a9.5 9.5 0 1 0 0 19c2.082 0 4.008-.67 5.573-1.806l4.72 4.72a1 1 0 0 0 1.414 0l.707-.707a1 1 0 0 0 0-1.414l-4.72-4.72A9.46 9.46 0 0 0 19.5 10 9.5 9.5 0 0 0 10 .5M3.5 10a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0" fill="{color}"/>'
+        f'</svg>'
+    )
 
-SVG_EDIT = """<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
-  <path d="M17.067 2.272a3.568 3.568 0 0 1 3.888 5.818l-.518.518-5.045-5.045.518-.518a3.6 3.6 0 0 1 1.157-.773m-3.09 2.705L3.655 15.3a1 1 0 0 0-.258.444l-1.362 4.993a1 1 0 0 0 1.228 1.228l4.993-1.362a1 1 0 0 0 .444-.258l10.323-10.322z" fill="#858889"/>
-</svg>"""
 
-SVG_EXCEL_IMPORT = """<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18" viewBox="0 0 0.585 0.585" xml:space="preserve">
-  <path style="fill:#858889" d="M.566.068H.36v.067h.068v.046H.36v.044h.068V.27H.36v.045h.068V.36H.36v.045h.068V.45H.36v.068h.206c.01 0 .019-.009.019-.02V.087Q.584.069.566.067M.54.45H.45V.405h.09zm0-.09H.45V.315h.09zm0-.09H.45V.225h.09zm0-.09H.45V.135h.09zM0 .065V.52l.337.065V0zm.213.342L.174.333.169.318H.168L.163.334.124.408H.063L.136.294.07.18h.062l.033.068.007.019h.001L.18.247.216.179h.057L.205.292l.07.115z"/>
-</svg>"""
+def get_svg_edit(color: str = '#858889') -> str:
+    """Edit/pencil icon. Default gray (#858889)."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">'
+        f'<path d="M17.067 2.272a3.568 3.568 0 0 1 3.888 5.818l-.518.518-5.045-5.045.518-.518a3.6 3.6 0 0 1 1.157-.773m-3.09 2.705L3.655 15.3a1 1 0 0 0-.258.444l-1.362 4.993a1 1 0 0 0 1.228 1.228l4.993-1.362a1 1 0 0 0 .444-.258l10.323-10.322z" fill="{color}"/>'
+        f'</svg>'
+    )
+
+
+def get_svg_excel_import(color: str = '#858889') -> str:
+    """Excel import icon. Default gray (#858889)."""
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18" viewBox="0 0 0.585 0.585" xml:space="preserve">'
+        f'<path fill="{color}" d="M.566.068H.36v.067h.068v.046H.36v.044h.068V.27H.36v.045h.068V.36H.36v.045h.068V.45H.36v.068h.206c.01 0 .019-.009.019-.02V.087Q.584.069.566.067M.54.45H.45V.405h.09zm0-.09H.45V.315h.09zm0-.09H.45V.225h.09zm0-.09H.45V.135h.09zM0 .065V.52l.337.065V0zm.213.342L.174.333.169.318H.168L.163.334.124.408H.063L.136.294.07.18h.062l.033.068.007.019h.001L.18.247.216.179h.057L.205.292l.07.115z"/>'
+        f'</svg>'
+    )
+
+
+SVG_VIEW = get_svg_view()
+SVG_EDIT = get_svg_edit()
+SVG_EXCEL_IMPORT = get_svg_excel_import()
 
 
 # =============================================================================
