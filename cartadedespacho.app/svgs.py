@@ -209,3 +209,74 @@ def get_svg_download_template(color: str = '#858889') -> str:
     )
 
 SVG_DOWNLOAD_TEMPLATE = get_svg_download_template()
+
+
+def make_svg_button(svg_str: str, object_name: str = '', size: int = 32,
+                    icon_size: int = 18, tooltip: str = '', role: str = '') -> 'QPushButton':
+    """
+    Build a square icon-only QPushButton from an inline SVG string.
+    Colors controlled via QSS role property (preferred) or objectName.
+    Returns a QPushButton ready to use.
+    """
+    from PySide6.QtWidgets import QPushButton
+    from PySide6.QtGui import QIcon, QPixmap
+    from PySide6.QtCore import QByteArray, Qt
+
+    btn = QPushButton()
+    if role:
+        btn.setProperty('role', role)
+        btn.style().unpolish(btn)
+        btn.style().polish(btn)
+    elif object_name:
+        btn.setObjectName(object_name)
+    btn.setFixedSize(size, size)
+    btn.setToolTip(tooltip)
+
+    px = QPixmap()
+    px.loadFromData(QByteArray(svg_str.encode('utf-8')), 'SVG')
+    if not px.isNull():
+        btn.setIcon(QIcon(px.scaled(
+            icon_size, icon_size,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation
+        )))
+    return btn
+
+
+def svg_to_qicon(svg_str: str, size: int = 16) -> 'QIcon':
+    """
+    Convert an SVG string to a QIcon scaled to size×size pixels.
+    Useful for setting icons on buttons or other widgets.
+    """
+    from PySide6.QtGui import QIcon, QPixmap
+    from PySide6.QtCore import QByteArray, Qt
+
+    px = QPixmap()
+    px.loadFromData(QByteArray(svg_str.encode('utf-8')), 'SVG')
+    if not px.isNull():
+        return QIcon(px.scaled(
+            size, size,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation
+        ))
+    return QIcon()
+
+
+def make_styled_table() -> 'QTableWidget':
+    """
+    Create a QTableWidget with app-styled headers and proportional columns.
+    Returns a configured QTableWidget instance.
+    """
+    from PySide6.QtWidgets import QTableWidget, QHeaderView
+    from theme import QSSA
+
+    tbl = QTableWidget()
+    tbl.verticalHeader().setDefaultSectionSize(28)
+    tbl.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+    tbl.verticalHeader().setFixedWidth(QSSA['endtable_col_header_width'])
+    tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+    tbl.horizontalHeader().setStretchLastSection(True)
+    tbl.setAlternatingRowColors(True)
+    tbl.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectItems)
+    tbl.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
+    return tbl

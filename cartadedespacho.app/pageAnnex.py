@@ -44,7 +44,8 @@ from PySide6.QtCore import Signal, Qt, QMimeData
 from PySide6.QtGui  import QTextListFormat, QTextCursor
 from widgets import NoNewlineLineEdit, CardWidget, EndorsementPolicyCard, InsuredGroupCard, EndorsementTableCard, GuaranteesCard, GuaranteesTableCard, CustomMessageBox
 from helpers import resource_path
-from svgs import SVG_EXCEL_IMPORT, SVG_DOWNLOAD_TEMPLATE, get_svg_download_template
+from svgs import (SVG_EXCEL_IMPORT, SVG_DOWNLOAD_TEMPLATE,
+                get_svg_download_template, make_svg_button)
 
 
 # ── Manual item definitions (mirrors the old pageManual.py) ───────────────────
@@ -675,11 +676,11 @@ class PageAnnex(QWidget):
         globalBtnLayout = QHBoxLayout()
         globalBtnLayout.addStretch()
 
-        self._btnGlobalImport = _makeSvgButton(
+        self._btnGlobalImport = make_svg_button(
             SVG_EXCEL_IMPORT, size=32, icon_size=18,
             tooltip=S['cesiones_global_import'], role='endtable-import'
         )
-        self._btnGlobalDownload = _makeSvgButton(
+        self._btnGlobalDownload = make_svg_button(
             SVG_DOWNLOAD_TEMPLATE, size=32, icon_size=18,
             tooltip=S['cesiones_global_download'], role='endtable-import'
         )
@@ -1070,33 +1071,7 @@ class PageAnnex(QWidget):
 # CESIONES DE DERECHO WIDGETS
 # ──────────────────────────────────────────────────────────────────────
 
-def _makeSvgButton(svg_str, object_name='', size=32, icon_size=18, tooltip='', role=''):
-    """
-    Build a square icon-only QPushButton from an inline SVG string.
-    Colors controlled via QSS role property (preferred) or objectName.
-    """
-    from PySide6.QtWidgets import QPushButton
-    from PySide6.QtGui import QIcon, QPixmap
-    from PySide6.QtCore import QByteArray, Qt
-
-    btn = QPushButton()
-    if role:
-        btn.setProperty('role', role)
-        btn.style().unpolish(btn)
-        btn.style().polish(btn)
-    elif object_name:
-        btn.setObjectName(object_name)
-    btn.setFixedSize(size, size)
-    btn.setToolTip(tooltip)
-
-    px = QPixmap()
-    px.loadFromData(QByteArray(svg_str.encode('utf-8')), 'SVG')
-    if not px.isNull():
-        btn.setIcon(QIcon(px.scaled(
-            icon_size, icon_size, Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation
-        )))
-    return btn
+# Uses make_svg_button from svgs.py
 
 
 class CesionesWidget(QWidget):
@@ -1312,7 +1287,7 @@ class TrecGroupWidget(CardWidget):
         self._nameCombo.currentTextChanged.connect(
             lambda t: self.setTitle(t.strip() or 'Nueva Entidad')
         )
-        self._btnRemove = _makeSvgButton(get_svg_trash(), 'BtnQuitar', tooltip='Quitar grupo')
+        self._btnRemove = make_svg_button(get_svg_trash(), object_name='BtnQuitar', tooltip='Quitar grupo')
         self._btnRemove.clicked.connect(self._onRemove)
         row1.addWidget(self._nameCombo, 1)
         row1.addWidget(self._btnRemove)
@@ -1365,7 +1340,7 @@ class TrecGroupWidget(CardWidget):
         self._btnDelete.style().unpolish(self._btnDelete); self._btnDelete.style().polish(self._btnDelete)
         row5.addWidget(self._btnDelete, 1)
         row5.addStretch()
-        self._btnImport = _makeSvgButton(SVG_EXCEL_IMPORT, size=26, icon_size=14, tooltip=S['btn_import_excel'], role='excel-icon')
+        self._btnImport = make_svg_button(SVG_EXCEL_IMPORT, size=26, icon_size=14, tooltip=S['btn_import_excel'], role='excel-icon')
         self._btnImport.clicked.connect(self._onImport)
         row5.addWidget(self._btnImport)
         inner.addLayout(row5)

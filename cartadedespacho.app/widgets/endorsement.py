@@ -35,35 +35,13 @@ def _normalize_currency_cols(cols, currency):
         _re.sub(r'^Monto Endosado.*', f'Monto Endosado {currency}', c)
         for c in cols
     ]
-from svgs import SVG_VIEW, SVG_EDIT, SVG_EXCEL_IMPORT, get_svg_trash, SVG_TRASH
+from svgs import (SVG_VIEW, SVG_EDIT, SVG_EXCEL_IMPORT, get_svg_trash,
+                SVG_TRASH, make_svg_button, svg_to_qicon, make_styled_table)
 from .dialog import CustomDialog  # direct submodule import — avoids circular via __init__
 import copy
 
 
-def _makeSvgButton(svg_str, object_name='', size=32, icon_size=18,
-                   tooltip='', role=''):
-    """
-    Build a square icon-only QPushButton from an inline SVG string.
-    Color controlled via QSS role property (preferred) or objectName.
-    """
-    btn = QPushButton()
-    if role:
-        btn.setProperty('role', role)
-        btn.style().unpolish(btn)
-        btn.style().polish(btn)
-    elif object_name:
-        btn.setObjectName(object_name)
-    btn.setFixedSize(size, size)
-    btn.setToolTip(tooltip)
-    px = QPixmap()
-    px.loadFromData(QByteArray(svg_str.encode()), 'SVG')
-    if not px.isNull():
-        btn.setIcon(QIcon(px.scaled(
-            icon_size, icon_size,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation
-        )))
-    return btn
+# Uses make_svg_button and svg_to_qicon from svgs.py
 
 
 class EndorsementTableCard(QWidget):
@@ -143,21 +121,8 @@ class EndorsementTableCard(QWidget):
         hl.addWidget(self._countLabel)
 
         def _hbtn(svg_str, role, tip, sz=22):
-            b = QPushButton()
-            b.setProperty('role', role)
-            b.style().unpolish(b)
-            b.style().polish(b)
-            b.setFixedSize(sz, sz)
-            b.setToolTip(tip)
-            px = QPixmap()
-            px.loadFromData(QByteArray(svg_str.encode()), 'SVG')
-            if not px.isNull():
-                b.setIcon(QIcon(px.scaled(
-                    sz - 6, sz - 6,
-                    Qt.AspectRatioMode.KeepAspectRatio,
-                    Qt.TransformationMode.SmoothTransformation
-                )))
-            return b
+            btn = make_svg_button(svg_str, role=role, tooltip=tip, size=sz, icon_size=sz-6)
+            return btn
 
         self._btnView   = _hbtn(SVG_VIEW,         'endtable-view',   S['endtable_btn_view'])
         self._btnEdit   = _hbtn(SVG_EDIT,         'endtable-edit',   S['endtable_btn_edit'])
@@ -366,36 +331,7 @@ class EndorsementTableCard(QWidget):
 # ENDORSEMENT DIALOGS
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _svg_to_qicon(svg_str: str, size: int = 16):
-    """Convert an SVG string to a QIcon scaled to size×size pixels."""
-    px = QPixmap()
-    px.loadFromData(QByteArray(svg_str.encode()), 'SVG')
-    if not px.isNull():
-        return QIcon(px.scaled(
-            size, size,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation
-        ))
-    return QIcon()
-
-
-def _makeStyledTable():
-    """Create a QTableWidget with app-styled headers and proportional columns."""
-    tbl = QTableWidget()
-    tbl.verticalHeader().setDefaultSectionSize(28)
-    tbl.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
-    tbl.verticalHeader().setFixedWidth(QSSA['endtable_col_header_width'])
-    tbl.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-    tbl.horizontalHeader().setStretchLastSection(True)
-    tbl.setAlternatingRowColors(True)
-    tbl.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectItems)
-    tbl.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-    # Row highlight color set via QSS in theme
-    return tbl
-    t.setWordWrap(True)
-    t.verticalHeader().setSectionResizeMode(
-        t.verticalHeader().ResizeMode.ResizeToContents)
-
+# Uses svg_to_qicon and make_styled_table from svgs.py
 
 
 class _EndorsementViewDialog(CustomDialog):
@@ -413,7 +349,7 @@ class _EndorsementViewDialog(CustomDialog):
     def _populate(self):
 
         def _make_view_table(cols, rows):
-            tbl = _makeStyledTable()
+            tbl = make_styled_table()
             tbl.setColumnCount(len(cols))
             tbl.setHorizontalHeaderLabels(cols)
             tbl.setRowCount(len(rows))
@@ -522,7 +458,7 @@ class _EndorsementEditDialog(CustomDialog):
             self._topbarGearBtn.setCheckable(True)
             self._topbarGearBtn.setFixedSize(g_w, g_h)
             self._topbarGearBtn.setToolTip(S['endtable_gear_tip'])
-            self._topbarGearBtn.setIcon(_svg_to_qicon(
+            self._topbarGearBtn.setIcon(svg_to_qicon(
                 get_svg_gear(QSSA.get('card_header_toggle', '#9a9a9a')),
                 QSSA['endtable_topbar_height'] - 8))
             # Override setFixedSize — use consistent topbar height
@@ -952,7 +888,7 @@ class _GroupEditor(QWidget):
             self._accordionBtn.setChecked(True)
             self._accordionBtn.setFixedSize(btn_sz, btn_sz)
             self._accordionBtn.setToolTip(S['endtable_accordion_tip'])
-            self._accordionBtn.setIcon(_svg_to_qicon(get_svg_chevron(expanded=True, color=icon_color, size=icon_sz), icon_sz))
+            self._accordionBtn.setIcon(svg_to_qicon(get_svg_chevron(expanded=True, color=icon_color, size=icon_sz), icon_sz))
             self._accordionBtn.toggled.connect(self._onAccordionToggled)
             self._accordionBtn.setVisible(False)  # hidden — tab provides navigation
             hl.addWidget(self._accordionBtn)
@@ -982,13 +918,13 @@ class _GroupEditor(QWidget):
             self._gearBtn.setCheckable(True)
             self._gearBtn.setFixedSize(btn_sz, btn_sz)
             self._gearBtn.setToolTip(S['endtable_gear_tip'])
-            self._gearBtn.setIcon(_svg_to_qicon(get_svg_gear(icon_color), icon_sz))
+            self._gearBtn.setIcon(svg_to_qicon(get_svg_gear(icon_color), icon_sz))
             self._gearBtn.toggled.connect(self._onGearToggled)
             hl.addWidget(self._gearBtn)
 
             # Trash button
             if self._canDelete:
-                btnRm = _makeSvgButton(SVG_TRASH, size=btn_sz, icon_size=icon_sz, role='quitar')
+                btnRm = make_svg_button(SVG_TRASH, size=btn_sz, icon_size=icon_sz, role='quitar')
                 btnRm.clicked.connect(self.sigRemove.emit)
                 hl.addWidget(btnRm)
 
@@ -1029,7 +965,7 @@ class _GroupEditor(QWidget):
             btn.style().unpolish(btn); btn.style().polish(btn)
             btn.setFixedSize(c_w, c_h)
             btn.setToolTip(S[tip_key])
-            btn.setIcon(_svg_to_qicon(svg_fn, c_h - 6))
+            btn.setIcon(svg_to_qicon(svg_fn, c_h - 6))
             configLayout.addWidget(btn)
 
         self._configPanel.setVisible(False)  # hidden until gear pressed
@@ -1070,7 +1006,7 @@ class _GroupEditor(QWidget):
         bodyLayout.addLayout(btnRow)
 
         # Table — expands to fill available dialog space
-        self._table = _makeStyledTable()
+        self._table = make_styled_table()
         self._table.setColumnCount(len(self._columns))
         self._table.setHorizontalHeaderLabels(self._columns)
         self._table.horizontalHeader().setSectionsMovable(True)
@@ -1132,7 +1068,7 @@ class _GroupEditor(QWidget):
         icon_color = QSSA.get('card_header_toggle', '#ffffff')
         sz = QSSA['group_editor_accordion_size'][1] - 8
         svg = get_svg_chevron(expanded=expanded, color=icon_color, size=sz)
-        self._accordionBtn.setIcon(_svg_to_qicon(svg, sz))
+        self._accordionBtn.setIcon(svg_to_qicon(svg, sz))
         # Collapse height to header only — prevents blank space between groups
         self.setSizePolicy(
             QSizePolicy.Policy.Expanding,
