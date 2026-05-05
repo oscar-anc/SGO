@@ -34,6 +34,63 @@ from theme import QSSA
 
 
 # =============================================================================
+# SVG CONSTANTS CLASS
+# =============================================================================
+
+class SVG:
+    """
+    Centralized SVG icon constants.
+    Uses {color} placeholder for dynamic color replacement.
+    """
+
+    # ── Action icons (backward compatibility) ──────────────────────────────
+
+    TRASH = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        '<polyline points="3 6 5 6 21 6"/>'
+        '<path d="M19 6l-1 14H6L5 6"/>'
+        '<path d="M10 11v6M14 11v6"/>'
+        '<path d="M9 6V4h6v2"/>'
+        '</svg>'
+    )
+
+    DOWNLOAD_TEMPLATE = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
+        'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>'
+        '<polyline points="14 2 14 8 20 8"/>'
+        '<line x1="12" y1="18" x2="12" y2="12"/>'
+        '<polyline points="9 15 12 18 15 15"/>'
+        '</svg>'
+    )
+
+    VIEW = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">'
+        '<path fill-rule="evenodd" clip-rule="evenodd" '
+        'd="M10 .5a9.5 9.5 0 1 0 0 19c2.082 0 4.008-.67 5.573-1.806l4.72 4.72a1 1 0 0 0 1.414 0l.707-.707a1 1 0 0 0 0-1.414l-4.72-4.72'
+        'A9.46 9.46 0 0 0 19.5 10 9.5 9.5 0 0 0 10 .5M3.5 10a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0" fill="{color}"/>'
+        '</svg>'
+    )
+
+    EDIT = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">'
+        '<path d="M17.067 2.272a3.568 3.568 0 0 1 3.888 5.818l-.518.518-5.045-5.045.518-.518a3.6 3.6 0 0 1 1.157-.773m-3.09 2.705L3.655 15.3'
+        'a1 1 0 0 0-.258.444l-1.362 4.993a1 1 0 0 0 1.228 1.228l4.993-1.362a1 1 0 0 0 .444-.258l10.323-10.322z" fill="{color}"/>'
+        '</svg>'
+    )
+
+    EXCEL_IMPORT = (
+        '<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18" viewBox="0 0 0.585 0.585" xml:space="preserve">'
+        '<path fill="{color}" d="M.566.068H.36v.067h.068v.046H.36v.044h.068V.27H.36v.045h.068V.36H.36v.045h.068V.45H.36v.068h.206'
+        'c.01 0 .019-.009.019-.02V.087Q.584.069.566.067M.54.45H.45V.405h.09zm0-.09H.45V.315h.09zm0-.09H.45V.225h.09zm0-.09H.45V.135h.09z'
+        'M0 .065V.52l.337.065V0zm.213.342L.174.333.169.318H.168L.163.334.124.408H.063L.136.294.07.18h.062l.033.068.007.019h.001L.18.247'
+        '.216.179h.057L.205.292l.07.115z"/>'
+        '</svg>'
+    )
+
+
+# =============================================================================
 # HELPER FUNCTIONS
 # =============================================================================
 
@@ -100,71 +157,43 @@ def make_styled_table() -> QTableWidget:
 
 
 # =============================================================================
-# ACTION ICONS (trash, view, edit, excel, gear, download)
+# ACTION ICONS (backward compatibility — uses SVG class)
 # =============================================================================
 
 def get_svg_trash(color: str = '#FFFFFF') -> str:
     """Trash/delete icon. Default white — sits on colored btn_quitar_svg_bg."""
-    return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
-        f'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
-        f'<polyline points="3 6 5 6 21 6"/>'
-        f'<path d="M19 6l-1 14H6L5 6"/>'
-        f'<path d="M10 11v6M14 11v6"/>'
-        f'<path d="M9 6V4h6v2"/>'
-        f'</svg>'
-    )
+    return SVG.TRASH.replace("{color}", color)
 
 
-SVG_TRASH = get_svg_trash('#FFFFFF')
+SVG_TRASH = SVG.TRASH.replace("{color}", '#FFFFFF')
 
 
 def get_svg_download_template(color: str = '#858889') -> str:
     """Download template icon - downward arrow into document. viewBox 24x24."""
-    return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
-        f'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
-        f'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>'
-        f'<polyline points="14 2 14 8 20 8"/>'
-        f'<line x1="12" y1="18" x2="12" y2="12"/>'
-        f'<polyline points="9 15 12 18 15 15"/>'
-        f'</svg>'
-    )
+    return SVG.DOWNLOAD_TEMPLATE.replace("{color}", color)
 
 
-SVG_DOWNLOAD_TEMPLATE = get_svg_download_template()
+SVG_DOWNLOAD_TEMPLATE = SVG.DOWNLOAD_TEMPLATE.replace("{color}", '#858889')
 
 
 def get_svg_view(color: str = '#858889') -> str:
     """View/eye icon. Default gray (#858889)."""
-    return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">'
-        f'<path fill-rule="evenodd" clip-rule="evenodd" d="M10 .5a9.5 9.5 0 1 0 0 19c2.082 0 4.008-.67 5.573-1.806l4.72 4.72a1 1 0 0 0 1.414 0l.707-.707a1 1 0 0 0 0-1.414l-4.72-4.72A9.46 9.46 0 0 0 19.5 10 9.5 9.5 0 0 0 10 .5M3.5 10a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0" fill="{color}"/>'
-        f'</svg>'
-    )
+    return SVG.VIEW.replace("{color}", color)
 
 
 def get_svg_edit(color: str = '#858889') -> str:
     """Edit/pencil icon. Default gray (#858889)."""
-    return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">'
-        f'<path d="M17.067 2.272a3.568 3.568 0 0 1 3.888 5.818l-.518.518-5.045-5.045.518-.518a3.6 3.6 0 0 1 1.157-.773m-3.09 2.705L3.655 15.3a1 1 0 0 0-.258.444l-1.362 4.993a1 1 0 0 0 1.228 1.228l4.993-1.362a1 1 0 0 0 .444-.258l10.323-10.322z" fill="{color}"/>'
-        f'</svg>'
-    )
+    return SVG.EDIT.replace("{color}", color)
 
 
 def get_svg_excel_import(color: str = '#858889') -> str:
     """Excel import icon. Default gray (#858889)."""
-    return (
-        f'<svg xmlns="http://www.w3.org/2000/svg" height="18" width="18" viewBox="0 0 0.585 0.585" xml:space="preserve">'
-        f'<path fill="{color}" d="M.566.068H.36v.067h.068v.046H.36v.044h.068V.27H.36v.045h.068V.36H.36v.045h.068V.45H.36v.068h.206c.01 0 .019-.009.019-.02V.087Q.584.069.566.067M.54.45H.45V.405h.09zm0-.09H.45V.315h.09zm0-.09H.45V.225h.09zm0-.09H.45V.135h.09zM0 .065V.52l.337.065V0zm.213.342L.174.333.169.318H.168L.163.334.124.408H.063L.136.294.07.18h.062l.033.068.007.019h.001L.18.247.216.179h.057L.205.292l.07.115z"/>'
-        f'</svg>'
-    )
+    return SVG.EXCEL_IMPORT.replace("{color}", color)
 
 
-SVG_VIEW = get_svg_view()
-SVG_EDIT = get_svg_edit()
-SVG_EXCEL_IMPORT = get_svg_excel_import()
+SVG_VIEW = SVG.VIEW.replace("{color}", '#858889')
+SVG_EDIT = SVG.EDIT.replace("{color}", '#858889')
+SVG_EXCEL_IMPORT = SVG.EXCEL_IMPORT.replace("{color}", '#858889')
 
 
 # =============================================================================
